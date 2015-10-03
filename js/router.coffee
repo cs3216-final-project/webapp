@@ -32,4 +32,4 @@ module.exports =  Backbone.Router.extend
   after: ->
 
   index: ->
-    console.log("Index route")
+    global.SvnthApp.views.mainVisuals.render()
