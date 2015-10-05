@@ -8,9 +8,12 @@ module.exports = BaseView.extend
   mainVisualsTemplate: mainVisualsTemplate
   midiTriggersTemplate: midiTriggersTemplate
   initialize: ->
+    @two = new Two(fullscreen: false)
   render: ->
     $(@el).append @midiTriggersTemplate()
     $(@el).append @mainVisualsTemplate()
+    vis = document.getElementById('divspace')
+    @two.appendTo vis
     @connectToMidiDevice()
     return @
   events:
@@ -20,6 +23,7 @@ module.exports = BaseView.extend
     @onMidiMessage(
       data: [144, 63, 100] # TODO: remove hardcoding.
     )
+   
 
   connectToMidiDevice: () ->
     self = @
@@ -37,7 +41,7 @@ module.exports = BaseView.extend
     input = inputs.next()
 
     while input and !input.done
-      input.value.onmidimessage = @onMidiMessage
+      input.value.onmidimessage = @onMidiMessage.bind(@)
       devices.push input.value
       input = inputs.next()
 
@@ -52,4 +56,25 @@ module.exports = BaseView.extend
   onMidiMessage: (message) ->
     data = message.data
     console.log(data)
-    alert("Midi Signal received: " + data[2]) # note
+    @playAnimation()
+    #alert("Midi Signal received: " + data[2]) # note
+
+  playAnimation: () ->
+    
+
+    bg1 = @two.makeRectangle(@two.width / 2, @two.height / 2, @two.width, @two.height)
+
+    #draw rectangle convering entire frame
+    bg1.fill = '#42e8fe'
+    bg1.noStroke()
+    @two.bind('update', (frameCount) ->
+      if bg1.opacity > 0
+        bg1.opacity -= 0.1
+      return
+    ).play()
+
+    callback = -> 
+      @two.remove bg1
+      @two.pause()
+
+    setTimeout callback.bind(@), 300
