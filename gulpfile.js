@@ -6,10 +6,10 @@ var rename = require('gulp-rename');
 var source = require('vinyl-source-stream');
 
 var paths = {
-  scripts: ['./js/**/*.coffee', './js/**/**/*.hbs'],
-  app: ['./js/app.coffee'],
+  scripts: ['./public/js/**/*.coffee', './public/js/**/**/*.hbs'],
+  app: ['./public/js/app.coffee'],
   app_bundle_name: 'bundle.min.js',
-  app_bundle_dir: './dist/'
+  app_bundle_dir: './public/dist/js/'
 };
 
 gulp.task('scripts', function() {
