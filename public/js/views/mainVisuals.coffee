@@ -1,5 +1,6 @@
 $ = require "jquery"
 Two = require "twojs-browserify"
+Animate = require "./myAnimations.coffee"
 
 BaseView = require "./baseView.coffee"
 mainVisualsTemplate = require "../templates/mainVisuals.hbs"
@@ -10,7 +11,9 @@ module.exports = BaseView.extend
   mainVisualsTemplate: mainVisualsTemplate
   midiTriggersTemplate: midiTriggersTemplate
   initialize: ->
+    @animate = new Animate()
     @two = new Two(fullscreen: false)
+    #@loadScript()
   render: ->
     $(@el).append @midiTriggersTemplate()
     $(@el).append @mainVisualsTemplate()
@@ -26,6 +29,12 @@ module.exports = BaseView.extend
       data: [144, 63, 100] # TODO: remove hardcoding.
     )
 
+  #iniialiazeTwo: (canvas) ->
+
+  loadScript: () ->
+    $.getScript('../helpers/myAnimations.coffee', function: () ->
+      alert 'Script loaded but not necessarily executed.'
+    );
 
   connectToMidiDevice: () ->
     self = @
@@ -58,25 +67,5 @@ module.exports = BaseView.extend
   onMidiMessage: (message) ->
     data = message.data
     console.log(data)
-    @playAnimation()
+    @animate.generateAnimation(@two, @)
     #alert("Midi Signal received: " + data[2]) # note
-
-  playAnimation: () ->
-
-
-    bg1 = @two.makeRectangle(@two.width / 2, @two.height / 2, @two.width, @two.height)
-
-    #draw rectangle convering entire frame
-    bg1.fill = '#42e8fe'
-    bg1.noStroke()
-    @two.bind('update', (frameCount) ->
-      if bg1.opacity > 0
-        bg1.opacity -= 0.1
-      return
-    ).play()
-
-    callback = ->
-      @two.remove bg1
-      @two.pause()
-
-    setTimeout callback.bind(@), 300
