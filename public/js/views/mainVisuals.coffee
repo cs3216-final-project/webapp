@@ -59,4 +59,3 @@ module.exports = BaseView.extend
     data = message.data
     console.log(data)
     Animate.generateAnimation(@two, @)
-    #alert("Midi Signal received: " + data[2]) # note

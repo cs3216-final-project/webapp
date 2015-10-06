@@ -1,3 +1,3 @@
 module.exports =
-  appRoot : "http://localhost:8000/"
-  apiUrl: "http://localhost:8000/"
+  appRoot : "http://localhost:4000/"
+  apiUrl: "http://localhost:4000/"

@@ -1,6 +1,8 @@
 $ = require "jquery"
 _ = require "underscore"
 
+AuthHelper = require "./helpers/auth.coffee"
+
 module.exports =  Backbone.Router.extend
   initialize: ->
 
@@ -25,11 +27,39 @@ module.exports =  Backbone.Router.extend
 
   routes:
     "": "index"
+    "profile": "profile"
+    "login": "login"
+    "logout": "logout"
+
+  requiresAuth:
+    ['#profile']
 
   before: (params, next) ->
-    next()
+    isLoggedIn = AuthHelper.isLoggedIn()
+    path = Backbone.history.location.hash.split('/')[0];
+    needAuth = _.contains(@requiresAuth, path);
+    global.SvnthApp.views.navProfile.render()
+
+    if needAuth && !isLoggedIn
+      @navigate("/login", { trigger : true })
+    else
+      next()
 
   after: ->
 
   index: ->
     global.SvnthApp.views.mainVisuals.render()
+
+  profile: ->
+    global.SvnthApp.views.profile.render()
+
+  login: ->
+    if AuthHelper.isLoggedIn()
+      @navigate("/profile", { trigger : true })
+    global.SvnthApp.views.login.setElement('#main-wrapper')
+    global.SvnthApp.views.login.render()
+
+  logout: ->
+    AuthHelper.logout()
+    global.SvnthApp.views.navProfile.render()
+    @navigate("/", { trigger: true })
