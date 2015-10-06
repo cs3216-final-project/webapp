@@ -1,8 +1,8 @@
 $ = require "jquery"
 Two = require "twojs-browserify"
-Animate = require "./myAnimations.coffee"
 
 BaseView = require "./baseView.coffee"
+Animate = require "./myAnimations.coffee"
 mainVisualsTemplate = require "../templates/mainVisuals.hbs"
 midiTriggersTemplate = require "../templates/midiTriggers.hbs"
 
@@ -13,7 +13,6 @@ module.exports = BaseView.extend
   initialize: ->
     @animate = new Animate()
     @two = new Two(fullscreen: false)
-    #@loadScript()
   render: ->
     $(@el).append @midiTriggersTemplate()
     $(@el).append @mainVisualsTemplate()
@@ -28,13 +27,6 @@ module.exports = BaseView.extend
     @onMidiMessage(
       data: [144, 63, 100] # TODO: remove hardcoding.
     )
-
-  #iniialiazeTwo: (canvas) ->
-
-  loadScript: () ->
-    $.getScript('../helpers/myAnimations.coffee', function: () ->
-      alert 'Script loaded but not necessarily executed.'
-    );
 
   connectToMidiDevice: () ->
     self = @
