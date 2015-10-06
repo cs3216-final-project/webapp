@@ -2,7 +2,7 @@ $ = require "jquery"
 Two = require "twojs-browserify"
 
 BaseView = require "./baseView.coffee"
-Animate = require "./animations.coffee"
+Animate = require "../helpers/animations.coffee"
 mainVisualsTemplate = require "../templates/mainVisuals.hbs"
 midiTriggersTemplate = require "../templates/midiTriggers.hbs"
 
@@ -11,7 +11,6 @@ module.exports = BaseView.extend
   mainVisualsTemplate: mainVisualsTemplate
   midiTriggersTemplate: midiTriggersTemplate
   initialize: ->
-    @animate = new Animate()
     @two = new Two(fullscreen: false)
   render: ->
     $(@el).append @midiTriggersTemplate()
@@ -59,5 +58,5 @@ module.exports = BaseView.extend
   onMidiMessage: (message) ->
     data = message.data
     console.log(data)
-    @animate.generateAnimation(@two, @)
+    Animate.generateAnimation(@two, @)
     #alert("Midi Signal received: " + data[2]) # note

@@ -1,9 +1,7 @@
-BaseView = require "./baseView.coffee"
+module.exports =
 
-module.exports = BaseView.extend
-
-  #TODO: Animations should be connected to model
-  #temporary animations generator
+#TODO: Animations should be connected to model
+#temporary animations generator
 
   generateAnimation: (canvas, self) ->
     #number between 1 and 3
