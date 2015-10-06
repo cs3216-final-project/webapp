@@ -2,7 +2,7 @@ $ = require "jquery"
 Two = require "twojs-browserify"
 
 BaseView = require "./baseView.coffee"
-Animate = require "./myAnimations.coffee"
+Animate = require "./animations.coffee"
 mainVisualsTemplate = require "../templates/mainVisuals.hbs"
 midiTriggersTemplate = require "../templates/midiTriggers.hbs"
 
