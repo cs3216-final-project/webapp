@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include BCrypt
   has_secure_token :auth_token
-  validates_presence_of :username, :password
+  validates_presence_of :email, :password
 
   def create
     @user = User.new(params[:user])
@@ -20,5 +20,10 @@ class User < ActiveRecord::Base
 
   def valid_token?(token)
     auth_token == token
+  end
+
+  def to_json(options={})
+    options[:except] ||= [:password_hash]
+    super(options)
   end
 end

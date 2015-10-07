@@ -1,42 +1,43 @@
 class App
   helpers do
-    def protected!
-      return if !!authorized_user
-      respond_as_unauthorized
-    end
 
-    def authorized_user
+    # optional param `id` checks if the authorized user is the same as the user
+    # whose details are being fetched
+    def authorized_user(id = nil)
       @auth ||=  Rack::Auth::Basic::Request.new(request.env)
       if @auth.provided? && @auth.basic? && @auth.credentials
-        return check_token_and_get_user(
-          username: @auth.credentials[0],
+        user = check_token_and_get_user(
+          id: @auth.credentials[0],
           auth_token: @auth.credentials[1]
         )
+        id.nil? ? user : (user && user.id === id ? user : nil)
       else
-        return nil
+        nil
       end
     end
 
     def check_token_and_get_user(params)
-      user = User.where(username: params[:username]).last
+      user = User.where(id: params[:id]).last
       if user && user.valid_token?(params[:auth_token])
-        return user
+        user
+      else
+        nil
       end
-      return nil
     end
 
     def check_password_and_get_user(params)
       user = User.where(
-        username: params[:username],
+        email: params[:email],
       ).last
       if user && user.password == params[:password]
-        return user
+        user
+      else
+        nil
       end
-      return nil
     end
 
     def respond_as_unauthorized
-      headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+      # headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
       halt 401, "Not authorized\n"
     end
   end
@@ -47,5 +48,28 @@ class App
 
   get '/app' do
     erb :app
+  end
+
+  post '/user/auth' do
+    user = check_password_and_get_user(params)
+    if user.nil?
+      respond_as_unauthorized
+    else
+      return { id: user.id, auth_token: user.auth_token }.to_json
+    end
+  end
+
+  post '/user' do
+    User.first_or_create(params)
+  end
+
+  get '/user/:id' do
+    user = authorized_user(params[:id].to_i)
+    if user.nil?
+      respond_as_unauthorized
+    else
+      content_type :json
+      user.to_json
+    end
   end
 end
