@@ -6,7 +6,6 @@ module.exports =
   generateAnimation: (canvas, self) ->
     #number between 1 and 3
     num = Math.floor((Math.random() * 3) + 1)
-
     switch num
       when 1
         @rectflash(canvas, self)
@@ -14,8 +13,6 @@ module.exports =
         @circleslide(canvas, self)
       when 3
         @linerandom(canvas, self)
-    return
-
 
   #---- Blue Rectangle Flash
   rectflash: (canvas, self) ->
