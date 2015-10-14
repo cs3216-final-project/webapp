@@ -1,12 +1,5 @@
-require 'dotenv'
 Dotenv.load
 
-require 'sinatra/base'
-require 'sinatra/activerecord'
-
-require 'thin'
-require 'has_secure_token'
-require 'bcrypt'
 require 'yaml'
 
 # Can be used in ./svnth.rb like User.find, User.all etc
@@ -22,8 +15,4 @@ class App < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
   require "./lib/svnth"
-
-  EventMachine.run do
-    Thin::Server.start App, '0.0.0.0', 4000
-  end
 end
