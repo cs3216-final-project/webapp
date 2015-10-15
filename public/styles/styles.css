@@ -1,0 +1,90 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #333;
+}
+.navbar-toggle {
+  float: left;
+  margin-left: 15px;
+}
+
+@media (min-width: 0) {
+  .navbar-toggle {
+    display: block; /* force showing the toggle */
+  }
+}
+
+@media (min-width: 992px) {
+  body {
+    padding: 0;
+  }
+  .navbar {
+    right: auto;
+    background: none;
+    border: none;
+  }
+}
+
+#settings-btn {
+  color: #fff;
+}
+
+#main-wrapper {
+  margin-top: 50px; /* for navmenu button */
+}
+
+.midi-device-detail {
+  text-align: center;
+}
+
+.map:first-child {
+  border-top: 1px solid #333;
+}
+
+.map {
+  border-bottom: 1px solid #333;
+  height: 90px;
+}
+
+.map > div {
+  height: 100%;
+}
+
+.map .row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.map .midi-code {
+  text-align: center;
+  font-size: 46px;
+  font-weight: bold;
+  border-right: 1px solid #333;
+  padding-left: 12px;
+  padding-right: 0px;
+}
+
+.map .midi-code > span {
+  margin-top: 15px;
+}
+
+.map-details {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.animation-select {
+  width: 100px;
+}
+
+.map-controls {
+  margin-top: 8px;
+  display: block;
+}
+
+#nav-profile {
+  position: absolute;
+  bottom: 0;
+}

@@ -10,6 +10,7 @@ Svnth = ->
     User: require "./models/user.coffee"
   @Views =
     MainVisuals: require './views/mainVisuals.coffee'
+    Mappings: require './views/mappings.coffee'
     Login: require './views/login.coffee'
     NavProfile: require './views/navProfile.coffee'
     Profile: require './views/profile.coffee'
@@ -21,6 +22,7 @@ Svnth = ->
     @beforeInit.apply this  if typeof (@beforeInit) is 'function'
     @views =
       mainVisuals: new S.Views.MainVisuals()
+      mappings: new S.Views.Mappings()
       login: new S.Views.Login()
       navProfile: new S.Views.NavProfile()
       profile: new S.Views.Profile()

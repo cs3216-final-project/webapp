@@ -38,6 +38,11 @@ module.exports =  Backbone.Router.extend
     isLoggedIn = AuthHelper.isLoggedIn()
     path = Backbone.history.location.hash.split('/')[0];
     needAuth = _.contains(@requiresAuth, path);
+
+    global.SvnthApp.views.profile.close()
+    global.SvnthApp.views.login.close()
+
+    global.SvnthApp.views.navProfile.close()
     global.SvnthApp.views.navProfile.render()
 
     if needAuth && !isLoggedIn
@@ -49,6 +54,7 @@ module.exports =  Backbone.Router.extend
 
   index: ->
     global.SvnthApp.views.mainVisuals.render()
+    global.SvnthApp.views.mappings.render()
 
   profile: ->
     global.SvnthApp.views.profile.render()
@@ -61,5 +67,4 @@ module.exports =  Backbone.Router.extend
 
   logout: ->
     AuthHelper.logout()
-    global.SvnthApp.views.navProfile.render()
     @navigate("/", { trigger: true })
