@@ -45,7 +45,7 @@ body {
 
 .map {
   border-bottom: 1px solid #333;
-  height: 90px;
+  height: 120px;
 }
 
 .map > div {
@@ -67,7 +67,8 @@ body {
 }
 
 .map .midi-code > span {
-  margin-top: 15px;
+  margin-top: 25px;
+  display: block;
 }
 
 .map-details {
@@ -75,8 +76,13 @@ body {
   padding-bottom: 10px;
 }
 
-.animation-select {
-  width: 100px;
+.active-anim-wrapper {
+  margin-top: 5px;
+}
+
+.active-anim {
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .map-controls {

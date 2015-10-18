@@ -25,10 +25,6 @@ module.exports = BaseView.extend
     "click .trigger-map": "triggerMap"
     "click .remove-map": "removeMap"
 
-  triggerMap: (e) ->
-    code = $(e.currentTarget).data('midicode')
-    @playAnimation(@midiMap.getMap(code))
-
   removeMap: (e) ->
     code = $(e.currentTarget).data('midicode')
     @midiMap.unsetMap(code)
@@ -80,10 +76,15 @@ module.exports = BaseView.extend
   changeAnimation: (e) ->
     ele = $(e.currentTarget)
     animId = ele.val()
+    return if animId == ""
     code = ele.find(":selected").data('midicode')
     @midiMap.setMap(code, animId)
     @playAnimation(@midiMap.getMap(code))
 
+  triggerMap: (e) ->
+    code = $(e.currentTarget).data('midicode')
+    @playAnimation(@midiMap.getMap(code))
+
   playAnimation: (map) ->
     # TODO: make this a pub-sub system
-    global.SvnthApp.views.mainVisuals.playAnimation(map.anim)
+    global.SvnthApp.views.mainVisuals.playAnimation(map)

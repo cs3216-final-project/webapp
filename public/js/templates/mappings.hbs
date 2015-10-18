@@ -5,22 +5,27 @@
 </div>
 <div id="map-elements">
   {{#each midiMap.maps}}
-    <div class="map row" data-id="{{../code}}">
+    <div class="map row" data-id="{{this.code}}">
       <div class="midi-code col-md-3">
         <span>{{this.code}}</span>
       </div>
       <div class="map-details col-md-8">
         <div class="map-animation-selector row">
-          <form class="form-inline">
-            <label for="anim">Animation: </label>
+          <form>
             <select name="anim" class="animation-select form-control">
+              <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="" selected>
+                Choose Animation
+              </option>
               {{#each ../animations}}
                 <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="{{this.key}}">
                   {{this.name}}
-                </button>
+                </option>
               {{/each}}
             </select>
           </form>
+          <div class="active-anim-wrapper">
+            Active: <span class="active-anim">{{this.anim}}</span>
+          </div>
         </div>
         <div class="map-controls row">
           <button type="button" class="btn btn-labeled btn-primary btn-small trigger-map" data-midicode="{{this.code}}">
