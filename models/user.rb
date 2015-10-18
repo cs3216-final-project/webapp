@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :devices
+
   include BCrypt
   has_secure_token :auth_token
   validates_presence_of :email, :password

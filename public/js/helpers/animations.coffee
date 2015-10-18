@@ -1,95 +1,67 @@
-module.exports =
+$ = require "jquery"
 
-#TODO: Animations should be connected to model
-#temporary animations generator
+class Animations
+  @getAll: ->
+    [{ key: "cube", name: "Cube"}, { key: "skybox", name: "Skybox" }]
+  constructor: ->
+    @animateFn = null
 
-  generateAnimation: (canvas, self) ->
-    #number between 1 and 3
-    num = Math.floor((Math.random() * 3) + 1)
-    switch num
-      when 1
-        @rectflash(canvas, self)
-      when 2
-        @circleslide(canvas, self)
-      when 3
-        @linerandom(canvas, self)
+    @scene = new THREE.Scene();
+    @camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 10000 )
 
-  #---- Blue Rectangle Flash
-  rectflash: (canvas, self) ->
-    bg1 = canvas.makeRectangle(canvas.width / 2, canvas.height / 2, canvas.width, canvas.height)
+    @renderer = new THREE.WebGLRenderer({ alpha: true })
+    @renderer.setClearColor( 0x333333, 1);
+    @renderer.setSize(window.innerWidth, window.innerHeight)
+    $("#visuals").html(@renderer.domElement)
 
-    #draw rectangle convering entire frame
-    bg1.fill = '#42e8fe'
-    bg1.noStroke()
-    canvas.bind('update', (frameCount) ->
-      if bg1.opacity > 0
-        bg1.opacity -= 0.1
-      return
-    ).play()
+  cubeAnim: =>
+    @clearScene()
+    geometry = new THREE.BoxGeometry( 1, 1, 1 )
+    material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
+    @cube = new THREE.Mesh( geometry, material )
+    @cube.name = "cube"
+    @scene.add(@cube)
+    @camera.position.z = 5;
 
-    callback = ->
-      canvas.remove bg1
-      canvas.pause()
+    @animateFn = =>
+      @cube.rotation.x += 0.1;
+      @cube.rotation.y += 0.1;
 
-    setTimeout callback.bind(self), 300
+    callback = =>
+      @scene.remove(@cube)
 
-  #---- Orange Circle Slide  
-  circleslide: (canvas, self) ->
-    circle2radius = 0.3 * canvas.height
+    @render()
+    @callbackTimeout = setTimeout callback, 500
 
-    #set radius of circle
-    circle2 = canvas.makeCircle(-(0.3 * canvas.width), canvas.height / 2, circle2radius)
+  skyboxAnim: =>
+    @clearScene()
+    @camera.position.z = 30
+    cameraChange = 0.05
 
-    #draw circle out of frame
-    circle2.fill = '#ffaf47'
-    circle2.noStroke()
+    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    @skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })
+    @skybox = new THREE.Mesh(skyboxGeometry, @skyboxMaterial)
+    @scene.add(@skybox)
 
-    canvas.bind('update', (frameCount) ->
-      circlet1 = (canvas.width / 2 - (circle2.translation.x)) * 0.2
+    @animateFn = =>
+      @skyboxMaterial.color.setHex(Math.random() * 0xffffff)
 
-      #set tweening variable t1 for when circle approaches halfway mark
-      circlet2 = (canvas.width + circle2radius - (circle2.translation.x)) * 0.2
+    callback = =>
+      @scene.remove(@skybox)
 
-      #set tweening variable t2 for when circle has passed halfway mark
-      if circle2.translation.x < 0.999 * canvas.width / 2
-        #before circle hits halfway mark
-        circle2.scale += 0.0004 * circlet1
-        circle2.translation.x += circlet1
-      else
-        #after circle hits halfway mark
-        circle2.translation.x += circlet2
-        circle2.scale -= 0.0004 * circlet2
-      return
-    ).play()
+    @render()
+    @callbackTimeout = setTimeout callback, 500
 
-    callback = ->
-      canvas.remove circle2
-      canvas.pause()
+  render: =>
+    requestAnimationFrame(@render)
+    @animateFn()
+    @renderer.render(@scene, @camera)
 
-    setTimeout callback.bind(self), 1500
+  clearScene: =>
+    _.each @scene.children, (object) =>
+      @scene.remove(object)
+    clearTimeout(@callbackTimeout) if @callbackTimeout
+    @callbackTimeout = null
 
-  #---- Green Lines
-  linerandom: (canvas, self) ->
-    line3x = Math.random() * canvas.width
 
-    #randomize x position of line 
-    line3 = canvas.makeLine(line3x, -0.5 * canvas.height, line3x, 0)
-
-    #draw line out of frame
-    line3.stroke = '#2ecc71'
-    line3.linewidth = Math.random() * 30
-
-    canvas.bind('update', (frameCount) ->
-      #move line downwards with tweening variable t
-      line3t = (1.5 * canvas.height - (line3.translation.y)) * 0.1
-      line3.translation.y += line3t
-      line3.linewidth += 0.05
-      return
-    ).play()
-
-    callback = ->
-      canvas.remove line3
-      canvas.pause()
-
-    setTimeout callback.bind(self), 1000
-
+module.exports = Animations
