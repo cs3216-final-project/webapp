@@ -5,9 +5,12 @@ AuthHelper = require "./helpers/auth.coffee"
 
 Svnth = ->
   @Config = require './config.coffee'
-  @Collections = {}
+  @Collections =
+    Devices: require "./collections/devices.coffee"
   @Models =
     User: require "./models/user.coffee"
+    Device: require "./models/device.coffee"
+    Mapping: require "./models/mapping.coffee"
   @Views =
     MainVisuals: require './views/mainVisuals.coffee'
     Mappings: require './views/mappings.coffee'
@@ -20,6 +23,8 @@ Svnth = ->
 
   @init = ((initData) ->
     @beforeInit.apply this  if typeof (@beforeInit) is 'function'
+    @collections =
+      devices: new S.Collections.Devices()
     @views =
       mainVisuals: new S.Views.MainVisuals()
       mappings: new S.Views.Mappings()
@@ -39,6 +44,13 @@ $ ->
   Routers =
     Router : require './router.coffee'
   S.router = new Routers.Router()
+
+  Backbone.Model::toJSON = ->
+    json = _.clone(@attributes)
+    for attr of json
+      if json[attr] instanceof Backbone.Model or json[attr] instanceof Backbone.Collection
+        json[attr] = json[attr].toJSON()
+    json
 
   Backbone.history.start
     root: S.Config.appRoot
