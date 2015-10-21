@@ -16,11 +16,12 @@ module.exports = BaseView.extend
     @animations = new Animations()
     return @
 
-  playAnimation: (map) ->
+  playAnimation: (map, currentBPM) ->
     return if(@lastCode && @lastCode == map.code && @lastTime && (Date.now() - @lastTime < 600))
     @lastCode = map.code
     @lastTime = Date.now()
     anim = map.anim
+    @animations.updateBPM(currentBPM)
     switch anim
       when "skybox"
         @animations.skyboxAnim()

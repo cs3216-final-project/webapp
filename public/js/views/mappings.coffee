@@ -16,14 +16,24 @@ module.exports = BaseView.extend
     @midiMap = new Mapping({ name: "Test Mapping" })
     @animArr = Animations.getAll()
     @midiMap.on('change', @render, @)
+    @currentBPM = 128
   render: ->
     @connectToMidiDevice()
-    $(@el).html @mappingsTemplate({ animations: @animArr, midiMap: @midiMap.toJSON() })
+    $(@el).html @mappingsTemplate({ animations: @animArr, midiMap: @midiMap.toJSON(), currentBPM: @currentBPM})
     return @
   events:
     "change select.animation-select": "changeAnimation"
     "click .trigger-map": "triggerMap"
     "click .remove-map": "removeMap"
+    "change .bpm-input": "setBPM"
+
+  setBPM: (e) ->
+    bpm = $(e.currentTarget).find("input").val()
+    if (bpm <= 0 || bpm > 200)
+      @currentBPM = 128
+    else 
+      @currentBPM = bpm 
+    @render()
 
   removeMap: (e) ->
     code = $(e.currentTarget).data('midicode')
@@ -70,7 +80,6 @@ module.exports = BaseView.extend
       @midiMap.setMap(code, @animArr[0].key)
       map = @midiMap.getMap(code)
       # $(@el).find("#map-elements").append mapTemplate({ code: code, map: map, animations: @animArr })
-
     @playAnimation(map)
 
   changeAnimation: (e) ->
@@ -87,4 +96,4 @@ module.exports = BaseView.extend
 
   playAnimation: (map) ->
     # TODO: make this a pub-sub system
-    global.SvnthApp.views.mainVisuals.playAnimation(map)
+    global.SvnthApp.views.mainVisuals.playAnimation(map, @currentBPM)

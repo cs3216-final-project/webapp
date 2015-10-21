@@ -2,6 +2,12 @@
 <div class="midi-device-detail h5">No devices Connected</div>
 <div class="new-map">
   <div class="alert alert-info" role="alert">Push any Control on your MIDI Device</div>
+  <div class="bpm-input input-group">
+      <span class="input-group-btn">
+        <button class="bpm-btn btn btn-default" type="button">Set BPM</button>
+      </span>
+      <input type="number" class="form-control" placeholder="{{currentBPM}}">
+  </div>
 </div>
 <div id="map-elements">
   {{#each midiMap.maps}}

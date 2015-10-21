@@ -56,8 +56,8 @@ class Animations
   ###
   update bpm 
   ###
-  @updateBPM: (inputbpm) =>
-    @bpm = 60000/inputbpm
+  updateBPM: (inputbpm) =>
+      @bpm = 60000/inputbpm
 
   ###
   CUBE ANIMATION
