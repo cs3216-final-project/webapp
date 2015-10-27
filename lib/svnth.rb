@@ -43,11 +43,11 @@ class App
   end
 
   get '/' do
-    erb :index
+    erb :app
   end
 
   get '/app' do
-    erb :app
+    redirect to('/')
   end
 
   post '/user/auth' do
