@@ -32,7 +32,11 @@ body {
 }
 
 #main-wrapper {
-  margin-top: 50px; /* for navmenu button */
+  /*margin-top: 50px;  for navmenu button */
+}
+
+.pressed {
+    color:#00aa00
 }
 
 .midi-device-detail {
@@ -80,8 +84,25 @@ body {
   margin-top: 8px;
   display: block;
 }
+#mappings-config {
+  height: 90%;
+  overflow: auto;
+}
 
 #nav-profile {
   position: absolute;
   bottom: 0;
+}
+
+#navbar-visible div{
+  visibility: hidden;
+}
+
+#navbar-visible:hover div{
+  visibility: visible;
+}
+
+#navbar-visible {
+  background-color: transparent;
+  border-color: transparent;
 }
