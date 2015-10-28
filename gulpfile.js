@@ -19,7 +19,7 @@ gulp.task('scripts', function() {
   })
   .transform('coffeeify')
   .transform('hbsfy')
-  .transform('uglifyify')
+  // .transform('uglifyify')
   .bundle()
   .pipe(source(paths.app_bundle_name))
   .pipe(gulp.dest(paths.app_bundle_dir))

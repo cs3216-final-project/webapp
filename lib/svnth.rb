@@ -50,7 +50,7 @@ class App
     redirect to('/')
   end
 
-  post '/user/auth' do
+  post '/user/auth/?' do
     user = check_password_and_get_user(params)
     if user.nil?
       respond_as_unauthorized
@@ -59,11 +59,11 @@ class App
     end
   end
 
-  post '/user' do
+  post '/users/?' do
     User.first_or_create(params)
   end
 
-  get '/user/:id' do
+  get '/users/:id' do
     user = authorized_user(params[:id].to_i)
     if user.nil?
       respond_as_unauthorized
@@ -71,5 +71,54 @@ class App
       content_type :json
       user.to_json
     end
+  end
+
+  get '/devices/?' do
+    user = authorized_user
+    if user.nil?
+      respond_as_unauthorized
+    end
+    Device.includes(mapping_profiles: :code_maps)
+      .where(user_id: user.id)
+      .to_json(include: { mapping_profiles: {include: :code_maps }})
+  end
+
+  get '/devices/:id' do
+    user = authorized_user
+    if user.nil?
+      respond_as_unauthorized
+    end
+    Device.includes(mapping_profiles: :code_maps)
+    .find(params[:id])
+    .to_json(include: { mapping_profiles: {include: :code_maps }})
+  end
+
+  post '/devices/?' do
+    user = authorized_user
+    if user.nil?
+      respond_as_unauthorized
+    end
+    data = JSON.parse(request.body.read)
+
+    device = Device.create(
+      name: data["name"],
+      given_id: data["given_id"]
+    )
+    device.set_mapping_profiles_from_array(data["mapping_profiles"])
+    user.devices << device
+    user.save!
+    device.to_json(include: { mapping_profiles: {include: :code_maps }})
+  end
+
+  put '/devices/:id' do
+    user = authorized_user
+    if user.nil?
+      respond_as_unauthorized
+    end
+    data = JSON.parse(request.body.read)
+    device = Device.find(data["id"])
+    device.set_mapping_profiles_from_array!(data["mapping_profiles"])
+    device.save!
+    device.to_json(include: { mapping_profiles: {include: :code_maps }})
   end
 end

@@ -11,7 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006065202) do
+ActiveRecord::Schema.define(version: 20151019104535) do
+
+  create_table "code_maps", force: :cascade do |t|
+    t.integer "mapping_profile_id"
+    t.integer "code"
+    t.string  "animation"
+  end
+
+  add_index "code_maps", ["mapping_profile_id"], name: "index_code_maps_on_mapping_profile_id"
+
+  create_table "devices", force: :cascade do |t|
+    t.integer "user_id"
+    t.string  "name"
+    t.string  "given_id"
+  end
+
+  add_index "devices", ["user_id"], name: "index_devices_on_user_id"
+
+  create_table "mapping_profiles", force: :cascade do |t|
+    t.integer "device_id"
+    t.string  "name"
+  end
+
+  add_index "mapping_profiles", ["device_id"], name: "index_mapping_profiles_on_device_id"
 
   create_table "users", force: :cascade do |t|
     t.string "email"

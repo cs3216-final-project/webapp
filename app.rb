@@ -4,6 +4,9 @@ require 'yaml'
 
 # Can be used in ./svnth.rb like User.find, User.all etc
 require './models/user'
+require './models/device'
+require './models/mapping_profile'
+require './models/code_map'
 
 class App < Sinatra::Base
   configure do

@@ -1,4 +1,4 @@
 BaseModel = require "./base.coffee"
 Config = require "../config.coffee"
 module.exports = BaseModel.extend
-  urlRoot: Config.apiUrl + 'user'
+  urlRoot: Config.apiUrl + 'users'

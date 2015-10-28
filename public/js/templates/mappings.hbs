@@ -1,5 +1,20 @@
 <a class="navmenu-brand" href="#">Synthery</a>
-<div class="midi-device-detail h5">No devices Connected</div>
+<select id="device-select" name="device" class="form-control">
+  <option class="list-group-item device-btn" value="" selected>
+    Choose Device
+  </option>
+  {{#each devices}}
+    <option value="{{this.given_id}}" data-id="{{this.id}}">
+      {{this.name}}
+    </option>
+  {{/each}}
+</select>
+<div class="current-device-wrapper">
+  Active: <span class="active-device">{{currentDevice.name}}</span>
+  <button class="device-save-btn">
+    Save
+  </button>
+</div>
 <div class="new-map">
   <div class="alert alert-info" role="alert">Push any Control on your MIDI Device</div>
   <div class="bpm-input input-group">
@@ -10,39 +25,41 @@
   </div>
 </div>
 <div id="map-elements">
-  {{#each midiMap.maps}}
-    <div class="map row" data-id="{{this.code}}">
-      <div class="midi-code col-md-3">
-        <span>{{this.code}}</span>
-      </div>
-      <div class="map-details col-md-8">
-        <div class="map-animation-selector row">
-          <form>
-            <select name="anim" class="animation-select form-control">
-              <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="" selected>
-                Choose Animation
-              </option>
-              {{#each ../animations}}
-                <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="{{this.key}}">
-                  {{this.name}}
+  {{#if currentMappingProfile}}
+    {{#each currentMappingProfile.code_maps}}
+      <div class="map row" data-id="{{this.code}}">
+        <div class="midi-code col-md-3">
+          <span>{{this.code}}</span>
+        </div>
+        <div class="map-details col-md-8">
+          <div class="map-animation-selector row">
+            <form>
+              <select name="anim" class="animation-select form-control">
+                <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="" selected>
+                  Choose Animation
                 </option>
-              {{/each}}
-            </select>
-          </form>
-          <div class="active-anim-wrapper">
-            Active: <span class="active-anim">{{this.anim}}</span>
+                {{#each ../animations}}
+                  <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="{{this.key}}">
+                    {{this.name}}
+                  </option>
+                {{/each}}
+              </select>
+            </form>
+            <div class="active-anim-wrapper">
+              Active: <span class="active-anim">{{this.animation}}</span>
+            </div>
+          </div>
+          <div class="map-controls row">
+            <button type="button" class="btn btn-labeled btn-primary btn-small trigger-map" data-midicode="{{this.code}}">
+              <span class="btn-label"><i class="glyphicon glyphicon-play-circle"></i></span>
+              Trigger
+            </button>
+            <button type="button" class="btn btn-danger btn-small remove-map" data-midicode="{{this.code}}">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
           </div>
         </div>
-        <div class="map-controls row">
-          <button type="button" class="btn btn-labeled btn-primary btn-small trigger-map" data-midicode="{{this.code}}">
-            <span class="btn-label"><i class="glyphicon glyphicon-play-circle"></i></span>
-            Trigger
-          </button>
-          <button type="button" class="btn btn-danger btn-small remove-map" data-midicode="{{this.code}}">
-            <i class="glyphicon glyphicon-trash"></i>
-          </button>
-        </div>
       </div>
-    </div>
-  {{/each}}
+    {{/each}}
+  {{/if}}
 </div>
