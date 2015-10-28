@@ -60,7 +60,12 @@ class App
   end
 
   post '/users/?' do
-    User.first_or_create(params)
+    user = User.create(JSON.parse(request.body.read))
+    if user.errors.messages.empty?
+      user.to_json
+    else
+      halt 400, user.errors.messages.to_json
+    end
   end
 
   get '/users/:id' do

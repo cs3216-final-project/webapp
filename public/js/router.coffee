@@ -28,6 +28,7 @@ module.exports =  Backbone.Router.extend
   routes:
     "": "index"
     "profile": "profile"
+    "signup": "signup"
     "login": "login"
     "logout": "logout"
 
@@ -59,9 +60,15 @@ module.exports =  Backbone.Router.extend
   profile: ->
     global.SvnthApp.views.profile.render()
 
+  signup: ->
+    if AuthHelper.isLoggedIn()
+      @navigate("/app", { trigger : true })
+    global.SvnthApp.views.signup.setElement('#main-wrapper')
+    global.SvnthApp.views.signup.render()
+
   login: ->
     if AuthHelper.isLoggedIn()
-      @navigate("/profile", { trigger : true })
+      @navigate("/app", { trigger : true })
     global.SvnthApp.views.login.setElement('#main-wrapper')
     global.SvnthApp.views.login.render()
 
