@@ -1,5 +1,4 @@
 module.exports = Backbone.View.extend
-  template: null
   close: () ->
     @$el.empty()
     @unbind()

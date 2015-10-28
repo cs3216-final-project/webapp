@@ -104,7 +104,7 @@ class App
       name: data["name"],
       given_id: data["given_id"]
     )
-    device.set_mapping_profiles_from_array(data["mapping_profiles"])
+    device.set_mapping_profiles_from_array!(data["mapping_profiles"])
     user.devices << device
     user.save!
     device.to_json(include: { mapping_profiles: {include: :code_maps }})

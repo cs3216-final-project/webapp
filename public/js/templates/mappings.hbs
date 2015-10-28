@@ -1,18 +1,19 @@
 <a class="navmenu-brand" href="#">Synthery</a>
 <select id="device-select" name="device" class="form-control">
-  <option class="list-group-item device-btn" value="" selected>
-    Choose Device
-  </option>
-  {{#each devices}}
-    <option value="{{this.given_id}}" data-id="{{this.id}}">
-      {{this.name}}
+  {{#select this.currentDevice.given_id}}
+    <option class="list-group-item device-btn" value="" selected>
+      Choose Device
     </option>
-  {{/each}}
+    {{#each devices}}
+      <option value="{{this.given_id}}" data-id="{{this.id}}">
+        {{this.name}}
+      </option>
+    {{/each}}
+  {{/select}}
 </select>
 <div class="current-device-wrapper">
-  Active: <span class="active-device">{{currentDevice.name}}</span>
-  <button class="device-save-btn">
-    Save
+  <button class="btn btn-primary btn-block device-save-btn">
+    Save Mappings
   </button>
 </div>
 <div class="new-map">
@@ -35,19 +36,18 @@
           <div class="map-animation-selector row">
             <form>
               <select name="anim" class="animation-select form-control">
-                <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="" selected>
-                  Choose Animation
-                </option>
-                {{#each ../animations}}
-                  <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="{{this.key}}">
-                    {{this.name}}
+                {{#select this.animation}}
+                  <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="" selected>
+                    Choose Animation
                   </option>
-                {{/each}}
+                  {{#each ../animations}}
+                    <option class="list-group-item anim-btn" data-midicode="{{../code}}" value="{{this.key}}">
+                      {{this.name}}
+                    </option>
+                  {{/each}}
+                {{/select}}
               </select>
             </form>
-            <div class="active-anim-wrapper">
-              Active: <span class="active-anim">{{this.animation}}</span>
-            </div>
           </div>
           <div class="map-controls row">
             <button type="button" class="btn btn-labeled btn-primary btn-small trigger-map" data-midicode="{{this.code}}">
