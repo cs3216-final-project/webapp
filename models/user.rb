@@ -1,9 +1,11 @@
 class User < ActiveRecord::Base
+  include BCrypt
+
   has_many :devices
 
-  include BCrypt
   has_secure_token :auth_token
   validates_presence_of :email, :password
+  validates_uniqueness_of :email
 
   def create
     @user = User.new(params[:user])
