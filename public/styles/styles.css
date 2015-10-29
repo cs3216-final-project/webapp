@@ -76,15 +76,6 @@ body {
   padding-bottom: 10px;
 }
 
-.active-anim-wrapper {
-  margin-top: 5px;
-}
-
-.active-anim {
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
 .map-controls {
   margin-top: 8px;
   display: block;

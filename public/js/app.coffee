@@ -1,7 +1,13 @@
 'use strict'
 
 $ = require 'jquery'
+Handlebars = require("handlebars/runtime")["default"]
+
 AuthHelper = require "./helpers/auth.coffee"
+helpers = require("./helpers/view_helpers.coffee")(Handlebars)
+
+for own key, fn of helpers
+  Handlebars.registerHelper(key, fn)
 
 Svnth = ->
   @Config = require './config.coffee'
