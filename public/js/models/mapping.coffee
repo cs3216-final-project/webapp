@@ -6,7 +6,8 @@ Config = require "../config.coffee"
 module.exports = BaseModel.extend
   urlRoot: Config.apiUrl + 'mapping_profile'
   defaults: {
-    code_maps: []
+    code_maps: [],
+    bpm: 128
   }
   setMap: (code, anim) ->
     newMapping = {code: code, animation: anim}
@@ -28,3 +29,7 @@ module.exports = BaseModel.extend
       ele.code == code
     currentMap.splice(idx, 1)
     @set("code_maps", currentMap)
+  setBPM: (bpm) ->
+    @set("bpm", bpm)
+  getBPM: () ->
+    @get("bpm")

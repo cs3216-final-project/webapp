@@ -1,0 +1,31 @@
+<div class="bpm-input input-group row" id="bpm-{{currentMappingProfile.cid}}">
+  <span class="input-group-btn">
+    <button class="bpm-btn btn btn-default" type="button">Set BPM</button>
+  </span>
+  <input type="number" class="form-control" value="{{currentMappingProfile.attributes.bpm}}">
+</div>
+{{#if currentMappingProfile.attributes.code_maps}}
+  <div class="maplist row">
+    {{#each currentMappingProfile.attributes.code_maps}}
+      <div class="map" id="map-{{../currentMappingProfile.cid}}-{{this.code}}" data-id="{{this.code}}">
+        <div class="midi-code col-md-3">
+          <span>{{this.code}}</span>
+        </div>
+        <div class="map-details col-md-8">
+          <div class="map-animation-selector row">
+              <label for="anim">Animation: </label>
+                {{animation}}
+          </div>
+          <div class="map-controls row">
+            <button type="button" class="btn btn-labeled btn-primary trigger-map" data-midicode="{{this.code}}">
+              <span class="btn-label"><i class="glyphicon glyphicon-play-circle"></i></span>Trigger
+            </button>
+            <button type="button" class="btn btn-danger remove-map" data-midicode="{{this.code}}">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{/if}}

@@ -1,0 +1,81 @@
+<div class="row" id="settings-head">
+  <div class="col-md-5">
+    <select id="device-select" name="device" class="form-control">
+      {{#select currentDevice.given_id}}
+        <option class="list-group-item device-btn" value="keyboard" selected>
+          Keyboard
+        </option>
+        {{#each devices}}
+          <option value="{{this.given_id}}" data-id="{{this.id}}">
+            {{this.name}}
+          </option>
+        {{/each}}
+      {{/select}}
+    </select>
+  </div>
+  <div class="col-md-7">
+    <div  id="device-profile">
+      {{#if currentMappingProfile}}
+        {{currentMappingProfile.name}}
+      {{else}}
+        No Profile Selected
+      {{/if}}
+    </div>
+  </div>
+</div>
+<div class="row" id="settings-body">
+  {{#if currentDevice}}
+  {{else}}
+    <div id="board">
+      <div class="list-group keyboard-group">
+        <button type="button" id="key1" class="list-group-item keyboard"><span>1</span></button>
+        <button type="button" id="key2" class="list-group-item keyboard"><span>2</span></button>
+        <button type="button" id="key3" class="list-group-item keyboard"><span>3</span></button>
+        <button type="button" id="key4" class="list-group-item keyboard"><span>4</span></button>
+        <button type="button" id="key5" class="list-group-item keyboard"><span>5</span></button>
+        <button type="button" id="key6" class="list-group-item keyboard"><span>6</span></button>
+        <button type="button" id="key7" class="list-group-item keyboard"><span>7</span></button>
+        <button type="button" id="key8" class="list-group-item keyboard"><span>8</span></button>
+        <button type="button" id="key9" class="list-group-item keyboard"><span>9</span></button>
+        <button type="button" id="key0" class="list-group-item keyboard"><span>0</span></button>
+      </div>
+      <div class="list-group keyboard-group">
+        <button type="button" id="keyq" class="list-group-item keyboard"><span>Q</span></button>
+        <button type="button" id="keyw" class="list-group-item keyboard"><span>W</span></button>
+        <button type="button" id="keye" class="list-group-item keyboard"><span>E</span></button>
+        <button type="button" id="keyr" class="list-group-item keyboard"><span>R</span></button>
+        <button type="button" id="keyt" class="list-group-item keyboard"><span>T</span></button>
+        <button type="button" id="keyy" class="list-group-item keyboard"><span>Y</span></button>
+        <button type="button" id="keyu" class="list-group-item keyboard"><span>U</span></button>
+        <button type="button" id="keyi" class="list-group-item keyboard"><span>I</span></button>
+        <button type="button" id="keyo" class="list-group-item keyboard"><span>O</span></button>
+        <button type="button" id="keyp" class="list-group-item keyboard"><span>P</span></button>
+      </div>
+      <div class="list-group keyboard-group">
+        <button type="button" id="keya" class="list-group-item keyboard"><span>A</span></button>
+        <button type="button" id="keys" class="list-group-item keyboard"><span>S</span></button>
+        <button type="button" id="keyd" class="list-group-item keyboard"><span>D</span></button>
+        <button type="button" id="keyf" class="list-group-item keyboard"><span>F</span></button>
+        <button type="button" id="keyg" class="list-group-item keyboard"><span>G</span></button>
+        <button type="button" id="keyh" class="list-group-item keyboard"><span>H</span></button>
+        <button type="button" id="keyj" class="list-group-item keyboard"><span>J</span></button>
+        <button type="button" id="keyk" class="list-group-item keyboard"><span>K</span></button>
+        <button type="button" id="keyl" class="list-group-item keyboard"><span>L</span></button>
+      </div>
+      <div class="list-group keyboard-group">
+        <button type="button" id="keyshift" class="list-group-item keyboard"><span>shift</span></button>
+        <button type="button" id="keyz" class="list-group-item keyboard"><span>Z</span></button>
+        <button type="button" id="keyx" class="list-group-item keyboard"><span>X</span></button>
+        <button type="button" id="keyc" class="list-group-item keyboard"><span>C</span></button>
+        <button type="button" id="keyv" class="list-group-item keyboard"><span>V</span></button>
+        <button type="button" id="keyb" class="list-group-item keyboard"><span>B</span></button>
+        <button type="button" id="keyn" class="list-group-item keyboard"><span>N</span></button>
+        <button type="button" id="keym" class="list-group-item keyboard"><span>M</span></button>
+        <button type="button" id="keydelete" class="list-group-item keyboard"><span>delete</span></button>
+      </div>
+      <div class="list-group keyboard-group">
+        <button type="button" id="keyspace" class="list-group-item keyboard"><span>space</span></button>
+      </div>
+    </div>
+  {{/if}}
+</div>

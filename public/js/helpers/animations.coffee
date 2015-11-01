@@ -30,7 +30,7 @@ class Animations
       
        
     ]
-  constructor: ->
+  constructor: (target)->
     @bpm = 468.75
     @animateFn = null
     @animateNeverFn = null
@@ -39,19 +39,21 @@ class Animations
     @stopping = false
 
     @scene = new THREE.Scene();
-    @camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 10000 )
+    @camera = new THREE.PerspectiveCamera( 45, $(target).width()/$(target).height(), 0.1, 10000 )
 
-    @renderer = new THREE.WebGLRenderer({ alpha: true })
-    @renderer.setClearColor( 0x333333, 1)
+    @renderer = new THREE.WebGLRenderer()
+    @renderer.setClearColor( 0x333333)
     @renderer.setPixelRatio( window.devicePixelRatio )
-    @renderer.setSize(window.innerWidth, window.innerHeight)
-    $("#visuals").html(@renderer.domElement)
+    @renderer.setSize($(target).width(), $(target).height())
+
+    $(target).append(@renderer.domElement)
     window.addEventListener('resize', @onWindowResize)
+    @renderer.clear()
 
   onWindowResize: =>
-    @camera.aspect = window.innerWidth / window.innerHeight
+    @camera.aspect = $(target).width() / $(target).height()
     @camera.updateProjectionMatrix()
-    @renderer.setSize window.innerWidth, window.innerHeight
+    @renderer.setSize $(target).width(), $(target).height()
 
   ###
   update bpm 

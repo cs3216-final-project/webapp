@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151019104535) do
+ActiveRecord::Schema.define(version: 20151101031108) do
 
   create_table "code_maps", force: :cascade do |t|
     t.integer "mapping_profile_id"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20151019104535) do
   create_table "mapping_profiles", force: :cascade do |t|
     t.integer "device_id"
     t.string  "name"
+    t.integer "bpm"
   end
 
   add_index "mapping_profiles", ["device_id"], name: "index_mapping_profiles_on_device_id"

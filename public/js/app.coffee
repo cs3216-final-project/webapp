@@ -18,12 +18,10 @@ Svnth = ->
     Device: require "./models/device.coffee"
     Mapping: require "./models/mapping.coffee"
   @Views =
-    MainVisuals: require './views/mainVisuals.coffee'
-    Mappings: require './views/mappings.coffee'
-    Signup: require './views/signup.coffee'
-    Login: require './views/login.coffee'
-    NavProfile: require './views/navProfile.coffee'
-    Profile: require './views/profile.coffee'
+    Signup: require './views/authView/signup.coffee'
+    Login: require './views/authView/login.coffee'
+    ConfigPage: require './views/configpageView/configpage.coffee'
+    NavBar: require './views/navbarView/navbar.coffee'
   @beforeInit = ->
 
   @afterInit = ->
@@ -33,12 +31,10 @@ Svnth = ->
     @collections =
       devices: new S.Collections.Devices()
     @views =
-      mainVisuals: new S.Views.MainVisuals()
-      mappings: new S.Views.Mappings()
+      configpage: new S.Views.ConfigPage()
       signup: new S.Views.Signup()
       login: new S.Views.Login()
-      navProfile: new S.Views.NavProfile()
-      profile: new S.Views.Profile()
+      navbar: new S.Views.NavBar()
     @afterInit.apply this  if typeof (@afterInit) is 'function'
     return
   ).bind(this)

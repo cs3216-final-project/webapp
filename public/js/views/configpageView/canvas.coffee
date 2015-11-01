@@ -1,27 +1,59 @@
 $ = require "jquery"
 
-BaseView = require "./baseView.coffee"
-template = require "../templates/mainVisuals.hbs"
+BaseView = require "../baseView.coffee"
+template = require "../../templates/configpageTemplate/canvas.hbs"
+fulltemplate = require "../../templates/configpageTemplate/fullcanvas.hbs"
 
 Two = require "twojs-browserify"
-Animations = require "../helpers/animations.coffee"
+Animations = require "../../helpers/animations.coffee"
 
 module.exports = BaseView.extend
-  el: "#main-wrapper"
+  el: "#animcanvas"
   template: template
-
-  initialize: ->
+  fulltemplate : fulltemplate
+  initialize: (options) ->
+    @parent = options.parent
   render: ->
     $(@el).html @template()
-    @animations = new Animations()
+    @animations = new Animations("#visuals")
     return @
+  events: ->
+    "click .btn-fullscreen" : "setFullScreen"
+    "click .btn-smallscreen" : "exitFullScreen"
 
-  playAnimation: (map, currentBPM) ->
-    return if(@lastCode && @lastCode == map.code && @lastTime && (Date.now() - @lastTime < 600))
-    @lastCode = map.code
-    @lastTime = Date.now()
-    anim = map.animation
-    @animations.updateBPM(currentBPM)
+  setFullScreen: (e) ->
+    $(@el).html @fulltemplate()
+    $(".non-visual").addClass("hide")
+    $(".navbar").addClass("hide")
+    @animations = new Animations("#fullscreen-visuals")
+    #TODO: PLAY CURRENTLY RUNNING ANIMATION
+
+  exitFullScreen: (e) ->
+    $(".non-visual").removeClass("hide")
+    $(".navbar").removeClass("hide")
+    @render()
+    #TODO: PLAY CURRENTLY RUNNING ANIMATION
+
+  playAnimation: (anim, bpm = null) ->
+    if bpm
+      @animations.updateBPM(bpm)
+    else
+      @animations.updateBPM(128)
+    @animate(anim)
+
+    ### leave this here in case, we need to do the time check for when testing with a real midi device###
+  # playAnimationWithMap: (map, currentBPM) ->
+  #   return if(@lastCode && @lastCode == map.code && @lastTime && (Date.now() - @lastTime < 600))
+  #   @lastCode = map.code
+  #   @lastTime = Date.now()
+  #   anim = map.animation
+  #   @animations.updateBPM(currentBPM)
+  #   @animate(anim)
+
+  default: () ->
+    return "skybox"
+
+  animate: (anim) ->
     switch anim
       when "skybox"
         @animations.skyboxAnim()
