@@ -1,5 +1,6 @@
 Dotenv.load
 
+require 'base64'
 require 'yaml'
 
 # Can be used in ./svnth.rb like User.find, User.all etc

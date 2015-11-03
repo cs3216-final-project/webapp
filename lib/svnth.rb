@@ -1,3 +1,5 @@
+Faye::WebSocket.load_adapter('thin')
+
 class App
   helpers do
 
@@ -125,5 +127,35 @@ class App
     device.set_mapping_profiles_from_array!(data["mapping_profiles"])
     device.save!
     device.to_json(include: { mapping_profiles: {include: :code_maps }})
+  end
+
+  get '/socket' do
+    if Faye::WebSocket.websocket?(request.env)
+      ws = Faye::WebSocket.new(request.env)
+
+      ws.on(:open) do |event|
+        puts 'On Open'
+      end
+
+      ws.on(:message) do |msg|
+        packed =  msg.data.pack('c*')
+        frame_num = packed[0...packed.index("data:")]
+        decoded = Base64.decode64(packed[packed.index("base64,") + 7..-1])
+        File.open("public/generated_media/img-#{frame_num.rjust(4, "0")}.png", "wb") do |f|
+          f.write(decoded)
+        end
+        # ffmpeg -framerate 4 -i public/generated_media/img-%04d.png
+        # -c:v libx264 -r 60 -pix_fmt yuv420p public/generated_media/out.mp4
+        ws.send(msg.data.reverse)  # Reverse and reply
+      end
+
+      ws.on(:close) do |event|
+        puts 'On Close'
+      end
+
+      ws.rack_response
+    else
+      halt 400, "Bad Request"
+    end
   end
 end

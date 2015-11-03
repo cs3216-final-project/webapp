@@ -2,6 +2,8 @@
 node_modules/
 dist/
 config.coffee
+public/generated_media/*.png
+public/generated_media/*.mp4
 
 #####=== OSX ===#####
 .DS_Store
