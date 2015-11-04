@@ -1,8 +1,11 @@
 $ = require "jquery"
 
+TextureAnimator = require "./texture_animator.coffee"
+
 class Animations
   @getAll: ->
     [
+      { key: "gif", name: "gif" },
       # { key: "cube", name: "Cube"},
       { key: "skybox", name: "Skybox" },
       # { key: "linesphere", name: "Linesphere" },
@@ -27,8 +30,8 @@ class Animations
       { key: "2.5a_verse", name: "2.5a Verse" },
       { key: "2.5b_verse", name: "2.5b Verse" },
       { key: "2.6_bridge", name: "2.6 Bridge" },
-      
-       
+
+
     ]
   constructor: ->
     @bpm = 468.75
@@ -38,7 +41,8 @@ class Animations
     @request = 0
     @stopping = false
 
-    @scene = new THREE.Scene();
+    @clock = new THREE.Clock()
+    @scene = new THREE.Scene()
     @camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 10000 )
 
     @renderer = new THREE.WebGLRenderer({ alpha: true })
@@ -54,7 +58,7 @@ class Animations
     @renderer.setSize window.innerWidth, window.innerHeight
 
   ###
-  update bpm 
+  update bpm
   ###
   updateBPM: (inputbpm) =>
       @bpm = 60000/inputbpm
@@ -214,7 +218,7 @@ class Animations
       @cube1.rotation.x += .01
       @cube1.rotation.y += .02
       @cube1.rotation.z += .03
-    
+
     anim1 = =>
       material.color.setHex(Math.random() * 0xffffff)
 
@@ -254,9 +258,9 @@ class Animations
 
     @boxes = []
 
-    box = 
+    box =
       new THREE.Mesh(
-        new THREE.PlaneGeometry(10,10), 
+        new THREE.PlaneGeometry(10,10),
         new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:2})
         )
     @scene.add(box)
@@ -282,16 +286,16 @@ class Animations
       @cube1.position.z = 10
 
     anim3 = =>
-      box = 
+      box =
         new THREE.Mesh(
-          new THREE.PlaneGeometry(10,10), 
+          new THREE.PlaneGeometry(10,10),
           new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:1})
           )
       @scene.add(box)
       box.material.opacity = 1;
       box.position.set(80*Math.random()-40,50*Math.random()-25,30*Math.random()-15)
       @boxes.push(box)
-    
+
     @inter = setInterval anim1, (@bpm*4)
     @inter2 = setInterval anim2, (@bpm)
     @inter3 = setInterval anim3, (@bpm/8)
@@ -299,7 +303,7 @@ class Animations
     # callbackStop = =>
     #   @scene.remove(@cube1)
     #   @scene.remove(@skybox)
-      
+
     @render()
     # @callbackTimeout = setTimeout callbackStop, 400
 
@@ -331,9 +335,9 @@ class Animations
 
     @boxes = []
 
-    box = 
+    box =
       new THREE.Mesh(
-        new THREE.PlaneGeometry(10,10), 
+        new THREE.PlaneGeometry(10,10),
         new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:2})
         )
     @scene.add(box)
@@ -350,18 +354,18 @@ class Animations
       for i in [0.. max]
         @boxes[i].rotation.z += .05
         @boxes[i].material.opacity += (0 - @boxes[i].material.opacity)/20
-    
+
     anim1 = =>
       skyboxMaterial.color.setHex(Math.random() * 0xffffff)
       material.color.setHex(Math.random() * 0xffffff)
-    
+
     anim2 = =>
       @cube1.position.z = 30
 
     anim3 = =>
-      box = 
+      box =
         new THREE.Mesh(
-          new THREE.PlaneGeometry(10,10), 
+          new THREE.PlaneGeometry(10,10),
           new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:1})
           )
       @scene.add(box)
@@ -414,7 +418,7 @@ class Animations
       @sphere2.rotation.y += .04
       @sphere.position.z += (40 - @sphere.position.z)/40
       @sphere2.position.z += (40 - @sphere2.position.z)/40
-    
+
     anim1 = =>
       @sphere.position.z = 0;
       @sphere2.position.z = 0
@@ -466,7 +470,7 @@ class Animations
       @sphere2.rotation.y += .04
       @sphere.position.z += (40 - @sphere.position.z)/30
       @sphere2.position.z += (40 - @sphere2.position.z)/30
-    
+
     anim1 = =>
       skyboxMaterial.color.setHex(Math.random() * 0xffffff)
       sphereMaterial.color.setHex(Math.random() * 0xffffff)
@@ -545,7 +549,7 @@ class Animations
       @triangle2.rotation.z -= .01
       @triangle3.rotation.z += .01
       @triangle4.rotation.z += .01
-    
+
     anim1 = =>
       @triangle.rotation.z += Math.PI/2
       @triangle2.rotation.z += Math.PI/2
@@ -630,7 +634,7 @@ class Animations
       @triangle2.rotation.z -= .01
       @triangle3.rotation.z += .01
       @triangle4.rotation.z += .01
-    
+
     anim1 = =>
       @triangle.rotation.z += Math.PI/2
       @triangle2.rotation.z += Math.PI/2
@@ -687,7 +691,7 @@ class Animations
     @animateSphereFn = =>
       @meshintro.rotation.y += .01;
       @materialintro.opacity += (0 - @materialintro.opacity)/30
-      
+
     callback = =>
       @scene.remove(@meshintro)
 
@@ -816,7 +820,7 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
+
   ###
   Sphere falls down
   ###
@@ -878,7 +882,7 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
+
   ###
   Sphere falls up
   ###
@@ -940,7 +944,7 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
+
   ###
   Colour sphere
   ###
@@ -1170,7 +1174,7 @@ class Animations
   verse2_5aAnim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1178,7 +1182,7 @@ class Animations
     @scene.add(@skybox)
 
     geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-    
+
     colors = []
     max = geometry.vertices.length - 1
     for i in [0..max]
@@ -1188,7 +1192,7 @@ class Animations
     geometry.colors = colors
 
     material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-    
+
     @mesh = new THREE.Points(geometry, material);
     @mesh.position.set(0,0,0);
 
@@ -1256,7 +1260,7 @@ class Animations
   verse2_5bAnim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1264,7 +1268,7 @@ class Animations
     @scene.add(@skybox)
 
     geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-    
+
     colors = []
     max = geometry.vertices.length - 1
     for i in [0..max]
@@ -1274,7 +1278,7 @@ class Animations
     geometry.colors = colors
 
     material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-    
+
     @mesh = new THREE.Points(geometry, material);
     @mesh.position.set(0,0,0);
 
@@ -1311,7 +1315,7 @@ class Animations
     @wiremesh.scale.x = .1;
     @wiremesh.scale.y = .1;
     @wiremesh.scale.z = .1;
-  
+
     @animateFn = =>
       @mesh.rotation.y -= .005;
       @topmesh.rotation.y += .005;
@@ -1358,7 +1362,7 @@ class Animations
   bridge2_6Anim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1386,8 +1390,8 @@ class Animations
       colors[i].setHSL(Math.random(),1,0.5)
 
     geometry.colors = colors;
-    
-  
+
+
     @animateFn = =>
       @mesh.rotation.x += .001;
       @mesh.rotation.y += .002;
@@ -1403,6 +1407,27 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
+
+  gif: =>
+    @clearScene()
+    @camera.position.z = 50
+    runnerTexture = new THREE.ImageUtils.loadTexture('/img/anim.png')
+    # a texture with 10 frames arranged horizontally, display each for 75 millisec
+    @annie = new TextureAnimator(runnerTexture, 5, 1, 5, 100)
+    runnerMaterial = new THREE.MeshBasicMaterial({ map: runnerTexture })
+    runnerGeometry = new THREE.PlaneGeometry(50, 50)
+    @runner = new THREE.Mesh(runnerGeometry, runnerMaterial)
+    @runner.position.set(0, 0, 0)
+    @scene.add(@runner)
+
+    @animateFn = ()  =>
+      delta = @clock.getDelta()
+      @annie.update(1000 * delta)
+
+    callback = =>
+      @scene.remove(@runner)
+
+    @render()
 
   ###
   RENDER AND CLEAR METHODS

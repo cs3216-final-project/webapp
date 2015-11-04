@@ -29,6 +29,7 @@ GEM
     rack-protection (1.5.3)
       rack
     rake (10.4.2)
+    rmagick (2.15.4)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -36,6 +37,8 @@ GEM
     sinatra-activerecord (2.0.9)
       activerecord (>= 3.2)
       sinatra (~> 1.0)
+    spritesheet (0.0.3)
+      rmagick
     sqlite3 (1.3.10)
     thin (1.6.4)
       daemons (~> 1.0, >= 1.0.9)
@@ -56,6 +59,7 @@ DEPENDENCIES
   rake
   sinatra
   sinatra-activerecord
+  spritesheet
   sqlite3
   thin
 

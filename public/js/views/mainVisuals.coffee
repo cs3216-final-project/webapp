@@ -23,6 +23,8 @@ module.exports = BaseView.extend
     anim = map.animation
     @animations.updateBPM(currentBPM)
     switch anim
+      when "gif"
+        @animations.gif()
       when "skybox"
         @animations.skyboxAnim()
       when "cube"
