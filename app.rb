@@ -13,6 +13,7 @@ class App < Sinatra::Base
     enable :logging
   end
   set :environment, ENV['RACK_ENV']
+  set :protection, :except => :frame_options
   set :public_folder, Proc.new { File.join(root, "public") }
   set :views, Proc.new { File.join(root, "templates") }
   register Sinatra::ActiveRecordExtension
