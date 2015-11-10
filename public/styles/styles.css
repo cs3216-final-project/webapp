@@ -173,7 +173,7 @@ body, button, input, select, textarea {
 
 /* Animation Screen and Buttons */
 #visuals {
-  height: 50vh;
+  height: 70vh;
 }
 
 #fullscreen-visuals {
@@ -275,7 +275,9 @@ body, button, input, select, textarea {
 
 #device-select {
   margin: 5px 5px;
-  background-color: white;
+  display: inline;
+  width: 200px;
+  /*background-color: white;*/
 }
 
 #device-profile {

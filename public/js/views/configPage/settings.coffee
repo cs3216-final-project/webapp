@@ -69,13 +69,6 @@ module.exports = BaseView.extend
 
   changeDevice: (e) ->
     given_id = $(e.currentTarget).val()
-    if given_id == 'keyboard'
-      @parent.setDevice(null)
-      #set keyboard connection
-    else
-      device = @devices.find (model) ->
-        model.get('given_id') == given_id
-      @parent.setDevice(device)
-      #set midi connection
-      #TODO ADD THE MONITOR THING
-
+    device = @devices.find (model) ->
+      model.get('given_id') == given_id
+    @parent.setDevice(device)
