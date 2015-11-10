@@ -1,8 +1,9 @@
 $ = require "jquery"
-BaseView = require "./baseView.coffee"
-loginTemplate = require "../templates/login.hbs"
+BaseView = require "../baseView.coffee"
 
-AuthHelper = require "../helpers/auth.coffee"
+loginTemplate = require "../../templates/auth/login.hbs"
+
+AuthHelper = require "../../helpers/auth.coffee"
 
 module.exports = BaseView.extend
   template: loginTemplate

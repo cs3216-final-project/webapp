@@ -5,3 +5,5 @@ module.exports = Backbone.View.extend
     if @onclose
       @onclose()
     return @
+  assign : (view, selector) ->
+    view.setElement(@$(selector)).render()

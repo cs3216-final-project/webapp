@@ -1,0 +1,81 @@
+<div class="alert alert-info" id="save-alert" role="alert">Saved Configurations!</div>
+<div class="navmenu-brand" href="#">
+  <div class="row profile-tab">
+      Profiles
+    <div class="add-save">
+      {{#if currentDevice}}
+        <button type="button" class="btn btn-warning" id="save-profile">
+          <i class="glyphicon glyphicon-floppy-save"></i>
+        </button>
+        <button type="button" class="btn btn-info" id="add-profile">
+          <i class="glyphicon glyphicon-plus"></i>
+        </button>
+      {{/if}}
+    </div>
+  </div>
+</div>
+<div class="panel-group" id="config-profile-list" role="tablist" aria-multiselectable="false">
+  {{#if currentDevice}}
+    {{#each currentDevice.mapping_profiles}}
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="hd-{{this.cid}}">
+            <div class= "row">
+              <div class="col-md-6">
+                <h4 class="panel-title profile-title">
+                  {{this.attributes.name}}
+                </h4>
+              </div>
+              <div class="col-md-6 profile-buttons">
+                <a role="button" data-toggle="collapse" data-parent="#config-profile-list" href="#col-{{this.cid}}" aria-expanded="false" aria-controls="col-{{this.cid}}">
+                    <button type="button" class="btn btn-danger edit-profile" id="edit-{{this.cid}}">
+                      <i class="glyphicon glyphicon-pencil edit-pen"></i>
+                      <i class="glyphicon glyphicon-ok edit-ok" style="display: none"></i>
+                    </button>
+                  </a>
+                <button type="button" class="btn btn-danger del-profile" id="del-{{this.cid}}">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="col-{{this.cid}}" class="panel-collapse collapse profile-collapse" role="tabpanel" aria-labelledby="hd-{{this.cid}}">
+            <div class="panel-body map-elements" id="mp-{{this.cid}}">
+              <div class="bpm-input input-group row" id="bpm-{{this.cid}}">
+                <span class="input-group-btn">
+                  <button class="bpm-btn btn btn-default" type="button">Set BPM</button>
+                </span>
+                <input type="number" class="form-control" value="{{this.attributes.bpm}}">
+              </div>
+              {{#if this.attributes.code_maps}}
+                <div class="maplist row">
+                  {{#each this.attributes.code_maps}}
+                    <div class="map" id="map-{{../this.cid}}-{{code}}" data-id="{{code}}">
+                      <div class="midi-code col-md-3">
+                        <span>{{code}}</span>
+                      </div>
+                      <div class="map-details col-md-8">
+                        <div class="map-animation-selector row">
+                            <label for="anim">Animation: </label>
+                              {{animation}}
+                        </div>
+                        <div class="map-controls row">
+                          <button type="button" class="btn btn-labeled btn-primary trigger-map" data-midicode="{{code}}">
+                            <span class="btn-label"><i class="glyphicon glyphicon-play-circle"></i></span>Trigger
+                          </button>
+                          <button type="button" class="btn btn-danger remove-map" data-midicode="{{code}}">
+                            <i class="glyphicon glyphicon-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  {{/each}}
+                </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+    {{/each}}
+  {{else}}
+    <div class="alert alert-info" role="alert">Keyboard Profiles coming soon!</div>
+  {{/if}}
+</div>

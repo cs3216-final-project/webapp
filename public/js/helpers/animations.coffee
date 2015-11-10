@@ -3,34 +3,32 @@ $ = require "jquery"
 class Animations
   @getAll: ->
     [
-      # { key: "cube", name: "Cube"},
-      { key: "skybox", name: "Skybox" },
-      # { key: "linesphere", name: "Linesphere" },
-      # { key: "squareparticles", name: "Square Particles" },
-      { key: "1.1_never", name: "1.1 Never Diamond" },
-      { key: "1.2_bgrandomcolor", name: "1.2 BG Random Color" },
-      { key: "1.3_versescene", name: "1.3 Verse Scene" },
-      { key: "1.4_versescene", name: "1.4 Verse Scene" },
-      { key: "1.5_prechorus", name: "1.5 Prechorus" },
-      { key: "1.6_chorusscene", name: "1.6 Chorus Scene" },
-      { key: "1.7_chorusscene", name: "1.7 Chorus Scene" },
-      { key: "1.8_verse2scene", name: "1.8 Verse 2 Scene" },
-      { key: "1.9_verse2scene", name: "1.9 Verse 2 Scene" },
-      { key: "2.1_intro", name: "2.1 Intro" },
-      { key: "2.2a_prechorus", name: "2.2a Prechorus" },
-      { key: "2.2b_prechorus", name: "2.2b Prechorus" },
-      { key: "2.2c_prechorus", name: "2.2c Prechorus" },
-      { key: "2.2d_prechorus", name: "2.2d Prechorus" },
-      { key: "2.3_prechorus", name: "2.3 Prechorus" },
-      { key: "2.4a_chorus", name: "2.4a Chorus" },
-      { key: "2.4b_chorus", name: "2.4b Chorus" },
-      { key: "2.5a_verse", name: "2.5a Verse" },
-      { key: "2.5b_verse", name: "2.5b Verse" },
-      { key: "2.6_bridge", name: "2.6 Bridge" },
-      
-       
+      { key: "flash", name: "Flashing Colors" },
+      { key: "spinningDiamond", name: "Spinning Diamond" },
+      { key: "randomBgColors", name: "Random Background Colors" },
+      { key: "rotatingCube", name: "Rotating Cube" },
+      { key: "enhancedRotatingCube", name: "Enhanced Rotating Cube" },
+      { key: "cubeAttack", name: "Cube Attack" },
+      { key: "rotatingSphereMesh", name: "Rotating Sphere Mesh" },
+      { key: "enhancedRotatingSphereMesh", name: "Enhanced Rotating Sphere Mesh" },
+      { key: "movingTriangles", name: "Moving Triangles" },
+      { key: "enhancedMovingTriangles", name: "Enhanced Moving Triangles" },
+      { key: "minimalSphereMesh", name: "Minimal Sphere Mesh" },
+      { key: "implodingSphere", name: "Imploding Sphere" },
+      { key: "splittingSphereBottom", name: "Splitting Sphere - Bottom" },
+      { key: "sideSplittingSphereDown", name: "Side Splitting Sphere - Down" },
+      { key: "sideSplittingSphereUp", name: "Side Splitting Sphere - Up" },
+      { key: "dancingSphere", name: "Dancing Sphere" },
+      { key: "trippyDancingSphere", name: "Trippy Dancing Sphere" },
+      { key: "trippyDancingSphereWithColors", name: "Trippy Dancing Sphere with colors" },
+      { key: "discoballOnStars", name: "Discoball on Stars" },
+      { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars" },
+      { key: "starrySkies", name: "Starry Skies" },
     ]
-  constructor: ->
+  @getDefault: ->
+    @getAll()[0]
+
+  constructor: (target)->
     @bpm = 468.75
     @animateFn = null
     @animateNeverFn = null
@@ -39,53 +37,26 @@ class Animations
     @stopping = false
 
     @scene = new THREE.Scene();
-    @camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 10000 )
+    @camera = new THREE.PerspectiveCamera( 45, $(target).width()/$(target).height(), 0.1, 10000 )
 
-    @renderer = new THREE.WebGLRenderer({ alpha: true })
-    @renderer.setClearColor( 0x333333, 1)
+    @renderer = new THREE.WebGLRenderer()
+    @renderer.setClearColor( 0x333333)
     @renderer.setPixelRatio( window.devicePixelRatio )
-    @renderer.setSize(window.innerWidth, window.innerHeight)
-    $("#visuals").html(@renderer.domElement)
+    @renderer.setSize($(target).width(), $(target).height())
+
+    $(target).append(@renderer.domElement)
     window.addEventListener('resize', @onWindowResize)
+    @renderer.clear()
 
   onWindowResize: =>
-    @camera.aspect = window.innerWidth / window.innerHeight
+    @camera.aspect = $(target).width() / $(target).height()
     @camera.updateProjectionMatrix()
-    @renderer.setSize window.innerWidth, window.innerHeight
+    @renderer.setSize $(target).width(), $(target).height()
 
-  ###
-  update bpm 
-  ###
   updateBPM: (inputbpm) =>
       @bpm = 60000/inputbpm
 
-  ###
-  CUBE ANIMATION
-  ###
-
-  cubeAnim: =>
-    @clearScene()
-    geometry = new THREE.BoxGeometry( 1, 1, 1 )
-    material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
-    @cube = new THREE.Mesh( geometry, material )
-    @cube.name = "cube"
-    @scene.add(@cube)
-    @camera.position.z = 5;
-
-    @animateFn = =>
-      @cube.rotation.x += 0.1;
-      @cube.rotation.y += 0.1;
-
-    callback = =>
-      @scene.remove(@cube)
-
-    @render()
-    @callbackTimeout = setTimeout callback, 400
-
-  ###
-  SKYBOX ANIMATION
-  ###
-  skyboxAnim: =>
+  flashAnim: =>
     @clearScene()
     @camera.position.z = 30
     cameraChange = 0.05
@@ -104,10 +75,7 @@ class Animations
     @render()
     @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Never Animation
-  ###
-  never1_1Anim: =>
+  spinningDiamondAnim: =>
     @camera.position.z = 50
 
     #LINES
@@ -161,11 +129,7 @@ class Animations
     @neverRender()
     @callbackTimeout = setTimeout callback, 1600
 
-  ###
-  BG Random Colour
-  ###
-
-  bgrandomcolor1_2Anim: =>
+  randomBgColorsAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -186,11 +150,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Verse Scene
-  ###
-
-  versescene1_3Anim: =>
+  rotatingCubeAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -214,7 +174,7 @@ class Animations
       @cube1.rotation.x += .01
       @cube1.rotation.y += .02
       @cube1.rotation.z += .03
-    
+
     anim1 = =>
       material.color.setHex(Math.random() * 0xffffff)
 
@@ -227,11 +187,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Verse Scene 2
-  ###
-
-  versescene1_4Anim: =>
+  enhancedRotatingCubeAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -254,9 +210,9 @@ class Animations
 
     @boxes = []
 
-    box = 
+    box =
       new THREE.Mesh(
-        new THREE.PlaneGeometry(10,10), 
+        new THREE.PlaneGeometry(10,10),
         new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:2})
         )
     @scene.add(box)
@@ -282,16 +238,16 @@ class Animations
       @cube1.position.z = 10
 
     anim3 = =>
-      box = 
+      box =
         new THREE.Mesh(
-          new THREE.PlaneGeometry(10,10), 
+          new THREE.PlaneGeometry(10,10),
           new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:1})
           )
       @scene.add(box)
       box.material.opacity = 1;
       box.position.set(80*Math.random()-40,50*Math.random()-25,30*Math.random()-15)
       @boxes.push(box)
-    
+
     @inter = setInterval anim1, (@bpm*4)
     @inter2 = setInterval anim2, (@bpm)
     @inter3 = setInterval anim3, (@bpm/8)
@@ -299,15 +255,11 @@ class Animations
     # callbackStop = =>
     #   @scene.remove(@cube1)
     #   @scene.remove(@skybox)
-      
+
     @render()
     # @callbackTimeout = setTimeout callbackStop, 400
 
-  ###
-  Prechorus
-  ###
-
-  prechorus1_5Anim: =>
+  cubeAttack: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -331,9 +283,9 @@ class Animations
 
     @boxes = []
 
-    box = 
+    box =
       new THREE.Mesh(
-        new THREE.PlaneGeometry(10,10), 
+        new THREE.PlaneGeometry(10,10),
         new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:2})
         )
     @scene.add(box)
@@ -350,18 +302,18 @@ class Animations
       for i in [0.. max]
         @boxes[i].rotation.z += .05
         @boxes[i].material.opacity += (0 - @boxes[i].material.opacity)/20
-    
+
     anim1 = =>
       skyboxMaterial.color.setHex(Math.random() * 0xffffff)
       material.color.setHex(Math.random() * 0xffffff)
-    
+
     anim2 = =>
       @cube1.position.z = 30
 
     anim3 = =>
-      box = 
+      box =
         new THREE.Mesh(
-          new THREE.PlaneGeometry(10,10), 
+          new THREE.PlaneGeometry(10,10),
           new THREE.MeshBasicMaterial({wireframe:true, color: 0xffffff, opacity: 1, transparent: true, wireframeLinewidth:1})
           )
       @scene.add(box)
@@ -380,11 +332,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Chorus Scene 2
-  ###
-
-  chorusscene1_6Anim: =>
+  rotatingSphereMeshAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -414,7 +362,7 @@ class Animations
       @sphere2.rotation.y += .04
       @sphere.position.z += (40 - @sphere.position.z)/40
       @sphere2.position.z += (40 - @sphere2.position.z)/40
-    
+
     anim1 = =>
       @sphere.position.z = 0;
       @sphere2.position.z = 0
@@ -431,11 +379,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Chorus Scene 3
-  ###
-
-  chorusscene1_7Anim: =>
+  enhancedRotatingSphereMeshAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -466,7 +410,7 @@ class Animations
       @sphere2.rotation.y += .04
       @sphere.position.z += (40 - @sphere.position.z)/30
       @sphere2.position.z += (40 - @sphere2.position.z)/30
-    
+
     anim1 = =>
       skyboxMaterial.color.setHex(Math.random() * 0xffffff)
       sphereMaterial.color.setHex(Math.random() * 0xffffff)
@@ -490,11 +434,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Verse 2 Scene
-  ###
-
-  verse2scene1_8Anim: =>
+  movingTrianglesAnim: =>
     @clearScene()
     @camera.position.z = -20
 
@@ -545,7 +485,7 @@ class Animations
       @triangle2.rotation.z -= .01
       @triangle3.rotation.z += .01
       @triangle4.rotation.z += .01
-    
+
     anim1 = =>
       @triangle.rotation.z += Math.PI/2
       @triangle2.rotation.z += Math.PI/2
@@ -574,11 +514,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Verse 2 Scene 2
-  ###
-
-  verse2scene1_9Anim: =>
+  enhancedMovingTrianglesAnim: =>
     @clearScene()
     @camera.position.z = -20
 
@@ -630,7 +566,7 @@ class Animations
       @triangle2.rotation.z -= .01
       @triangle3.rotation.z += .01
       @triangle4.rotation.z += .01
-    
+
     anim1 = =>
       @triangle.rotation.z += Math.PI/2
       @triangle2.rotation.z += Math.PI/2
@@ -664,10 +600,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Intro Sphere
-  ###
-  intro2_1Anim: =>
+  minimalSphereMeshAnim: =>
     clearTimeout(@callbackTimeout) if @callbackTimeout
     @callbackTimeout = null
     @scene.remove(@meshintro)
@@ -687,17 +620,14 @@ class Animations
     @animateSphereFn = =>
       @meshintro.rotation.y += .01;
       @materialintro.opacity += (0 - @materialintro.opacity)/30
-      
+
     callback = =>
       @scene.remove(@meshintro)
 
     @sphereRender()
     @callbackTimeout = setTimeout callback, 2000
 
-  ###
-  Top half dies
-  ###
-  prechorus2_2aAnim: =>
+  implodingSphereAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -756,11 +686,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  Bottom half dies
-  ###
-
-  prechorus2_2bAnim: =>
+  splittingSphereBottomAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -816,12 +742,8 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
-  ###
-  Sphere falls down
-  ###
 
-  prechorus2_2cAnim: =>
+  sideSplittingSphereDownAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -878,12 +800,8 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
-  ###
-  Sphere falls up
-  ###
 
-  prechorus2_2dAnim: =>
+  sideSplittingSphereUpAnim: =>
     @clearScene()
     @camera.position.z = 50
 
@@ -940,11 +858,8 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
-  
-  ###
-  Colour sphere
-  ###
-  prechorus2_3Anim: =>
+
+  dancingSphereAnim: =>
     @clearScene()
     @camera.position.z = 50
     #skybox
@@ -994,10 +909,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  DISCO LIGHTS SPHERE
-  ###
-  chorus2_4aAnim: =>
+  trippyDancingSphereAnim: =>
     @clearScene()
     @camera.position.z = 50
     #skybox
@@ -1077,10 +989,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  DISCO LIGHTS SPHERE MORE COLOURS
-  ###
-  chorus2_4bAnim: =>
+  trippyDancingSphereWithColorsAnim: =>
     @clearScene()
     @camera.position.z = 50
     #skybox
@@ -1164,13 +1073,10 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  DISCO BALL IN STARRY SKIES OMG
-  ###
-  verse2_5aAnim: =>
+  discoballOnStarsAnim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1178,7 +1084,7 @@ class Animations
     @scene.add(@skybox)
 
     geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-    
+
     colors = []
     max = geometry.vertices.length - 1
     for i in [0..max]
@@ -1188,7 +1094,7 @@ class Animations
     geometry.colors = colors
 
     material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-    
+
     @mesh = new THREE.Points(geometry, material);
     @mesh.position.set(0,0,0);
 
@@ -1249,14 +1155,10 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  DISCO IN STARRY SKY WITH NEUTRON STAR
-  ###
-
-  verse2_5bAnim: =>
+  enhancedDiscoballOnStarsAnim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1264,7 +1166,7 @@ class Animations
     @scene.add(@skybox)
 
     geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-    
+
     colors = []
     max = geometry.vertices.length - 1
     for i in [0..max]
@@ -1274,7 +1176,7 @@ class Animations
     geometry.colors = colors
 
     material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-    
+
     @mesh = new THREE.Points(geometry, material);
     @mesh.position.set(0,0,0);
 
@@ -1311,7 +1213,7 @@ class Animations
     @wiremesh.scale.x = .1;
     @wiremesh.scale.y = .1;
     @wiremesh.scale.z = .1;
-  
+
     @animateFn = =>
       @mesh.rotation.y -= .005;
       @topmesh.rotation.y += .005;
@@ -1352,13 +1254,10 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  ###
-  MORE STARRY SKIESS :D
-  ###
-  bridge2_6Anim: =>
+  starrySkiesAnim: =>
     @clearScene()
     @camera.position.z = 50
-    
+
     #skybox
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
     skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
@@ -1386,8 +1285,8 @@ class Animations
       colors[i].setHSL(Math.random(),1,0.5)
 
     geometry.colors = colors;
-    
-  
+
+
     @animateFn = =>
       @mesh.rotation.x += .001;
       @mesh.rotation.y += .002;

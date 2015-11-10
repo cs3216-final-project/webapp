@@ -1,0 +1,35 @@
+<div class="navmenu-brand">Genre</div>
+<div class="col-md-12">	
+	<div class="well well-lg genre-well">
+		<div class="btn-group-xs genre-btn-group" data-toggle="buttons">
+			<label class="btn btn-primary genre-btn active" id="gen-simple">
+				<input type="checkbox" autocomplete="off"> simple
+			</label>
+			<label class="btn btn-primary genre-btn">
+				<input type="checkbox" autocomplete="off"> 1980s
+			</label>
+			<label class="btn btn-primary genre-btn">
+				<input type="checkbox" autocomplete="off"> funky
+			</label>
+			<label class="btn btn-primary genre-btn">
+				<input type="checkbox" autocomplete="off"> electronic
+			</label>
+			<label class="btn btn-primary genre-btn">
+				<input type="checkbox" autocomplete="off"> moody
+			</label>
+			<label class="btn btn-primary genre-btn" id="gen-gifs">
+				<input type="radio" autocomplete="off"> GIFs
+			</label>
+		</div>
+	</div>
+</div>
+<div class="navmenu-brand">Animation</div>
+<div class="col-md-12">
+	<div name="anim" class="list-group" id="anim-list-group">
+	    {{#each animations}}
+	      	<button class="list-group-item anim-btn" id="anim-{{this.key}}" value="{{this.key}}">
+	        	{{this.name}}
+	      	</button>
+	    {{/each}}
+	</div>
+</div>

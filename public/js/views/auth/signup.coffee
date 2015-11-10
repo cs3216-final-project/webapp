@@ -1,11 +1,11 @@
 $ = require "jquery"
-BaseView = require "./baseView.coffee"
+BaseView = require "../baseView.coffee"
 
-User = require "../models/user.coffee"
+User = require "../../models/user.coffee"
 
-signupTemplate = require "../templates/signup.hbs"
+signupTemplate = require "../../templates/auth/signup.hbs"
 
-AuthHelper = require "../helpers/auth.coffee"
+AuthHelper = require "../../helpers/auth.coffee"
 
 module.exports = BaseView.extend
   template: signupTemplate

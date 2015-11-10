@@ -8,7 +8,7 @@ class Device < ActiveRecord::Base
       code_maps = mp["code_maps"].map do |cm|
         CodeMap.new(code: cm["code"], animation: cm["animation"])
       end
-      MappingProfile.new(name: mp["name"], code_maps: code_maps)
+      MappingProfile.new(name: mp["name"], bpm: mp["bpm"], code_maps: code_maps)
     end
   end
 end

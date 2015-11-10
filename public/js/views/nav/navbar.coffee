@@ -1,11 +1,13 @@
-BaseView = require "./baseView.coffee"
-navProfileTemplate = require '../templates/navProfile.hbs'
+$ = require "jquery"
 
-AuthHelper = require "../helpers/auth.coffee"
+BaseView = require "../baseView.coffee"
+navbarTemplate = require "../../templates/nav/navbar.hbs"
+
+AuthHelper = require "../../helpers/auth.coffee"
 
 module.exports = BaseView.extend
-  el: '#nav-profile'
-  template: navProfileTemplate
+  el: '#syn-navbar'
+  template: navbarTemplate
   initialize: ->
   render: ->
     if AuthHelper.isLoggedIn()
@@ -20,3 +22,9 @@ module.exports = BaseView.extend
       )
     else
       $(@el).html @template()
+    return @
+
+  restartNavProfile: ->
+    @close()
+    @render()
+
