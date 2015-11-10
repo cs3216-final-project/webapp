@@ -1,5 +1,7 @@
 $ = require "jquery"
 
+Animations = require "../../helpers/animations.coffee"
+
 BaseView = require "../baseView.coffee"
 GenresView = require "./genres.coffee"
 CanvasView = require "./canvas.coffee"
@@ -60,7 +62,7 @@ module.exports = BaseView.extend
     @currentDevice = device
 
   addNewCode: (code) ->
-    @currentMappingProfile.setMap(code, @canvasView.default())
+    @currentMappingProfile.setMap(code, Animations.getDefault()["key"])
 
   updateAnimations: (anim) ->
     @getCurrentMappingProfile().setMap(@getCurrentMappingCode(), anim)

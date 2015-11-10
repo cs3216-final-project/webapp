@@ -50,8 +50,5 @@ module.exports = BaseView.extend
   #   @animations.updateBPM(currentBPM)
   #   @animate(anim)
 
-  default: () ->
-    return "skybox"
-
   animate: (anim) ->
     @animations[anim+"Anim"]()

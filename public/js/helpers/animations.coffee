@@ -25,6 +25,9 @@ class Animations
       { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars" },
       { key: "starrySkies", name: "Starry Skies" },
     ]
+  @getDefault: ->
+    @getAll()[0]
+
   constructor: (target)->
     @bpm = 468.75
     @animateFn = null
