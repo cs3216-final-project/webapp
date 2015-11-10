@@ -1,8 +1,8 @@
 $ = require "jquery"
 
 BaseView = require "../baseView.coffee"
-template = require "../../templates/configpageTemplate/genres.hbs"
-animtemplate = require "../../templates/configpageTemplate/animlist.hbs"
+template = require "../../templates/configPage/genres.hbs"
+animtemplate = require "../../templates/configPage/animationList.hbs"
 
 
 Animations = require "../../helpers/animations.coffee"

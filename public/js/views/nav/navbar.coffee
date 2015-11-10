@@ -1,7 +1,7 @@
 $ = require "jquery"
 
 BaseView = require "../baseView.coffee"
-navbarTemplate = require "../../templates/navbarTemplate/navbar.hbs"
+navbarTemplate = require "../../templates/nav/navbar.hbs"
 
 AuthHelper = require "../../helpers/auth.coffee"
 
@@ -23,8 +23,8 @@ module.exports = BaseView.extend
     else
       $(@el).html @template()
     return @
-  
+
   restartNavProfile: ->
     @close()
     @render()
-  
+

@@ -1,7 +1,7 @@
 $ = require "jquery"
 
 BaseView = require "../baseView.coffee"
-settingsTemplate = require "../../templates/configpageTemplate/settings.hbs"
+settingsTemplate = require "../../templates/configPage/settings.hbs"
 
 AuthHelper = require "../../helpers/auth.coffee"
 

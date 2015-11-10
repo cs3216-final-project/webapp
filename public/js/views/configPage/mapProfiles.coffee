@@ -2,8 +2,8 @@ $ = require "jquery"
 _ = require "underscore"
 
 BaseView = require "../baseView.coffee"
-mapProfilesTemplate = require "../../templates/configpageTemplate/mapProfiles.hbs"
-mappingsTemplate = require "../../templates/configpageTemplate/mappings.hbs"
+mapProfilesTemplate = require "../../templates/configPage/mapProfiles.hbs"
+mappingsTemplate = require "../../templates/configPage/mappings.hbs"
 
 Device = require "../../models/device.coffee"
 MappingProfile = require "../../models/mapping.coffee"

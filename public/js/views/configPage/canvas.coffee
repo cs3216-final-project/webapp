@@ -1,8 +1,8 @@
 $ = require "jquery"
 
 BaseView = require "../baseView.coffee"
-template = require "../../templates/configpageTemplate/canvas.hbs"
-fulltemplate = require "../../templates/configpageTemplate/fullcanvas.hbs"
+template = require "../../templates/configPage/canvas.hbs"
+fulltemplate = require "../../templates/configPage/fullCanvas.hbs"
 
 Two = require "twojs-browserify"
 Animations = require "../../helpers/animations.coffee"

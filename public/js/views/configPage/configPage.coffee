@@ -8,7 +8,7 @@ SettingsView = require "./settings.coffee"
 
 Device = require "../../models/device.coffee"
 
-configTemplate = require "../../templates/configpageTemplate/configpage.hbs"
+configTemplate = require "../../templates/configPage/configPage.hbs"
 
 module.exports = BaseView.extend
   el: "#main-wrapper"
@@ -58,10 +58,10 @@ module.exports = BaseView.extend
 
   updateCurrentDevice: (device) ->
     @currentDevice = device
-  
+
   addNewCode: (code) ->
     @currentMappingProfile.setMap(code, @canvasView.default())
-    
+
   updateAnimations: (anim) ->
     @getCurrentMappingProfile().setMap(@getCurrentMappingCode(), anim)
     @mapProfilesView.renderOnlyMappings()
@@ -95,4 +95,4 @@ module.exports = BaseView.extend
   ###JUST FOR TESTING WITHOUT A MIDI CONTROLLER###
   midi: (message) ->
     @mapProfilesView.onMidiMessage(message)
-  
+

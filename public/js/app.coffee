@@ -18,10 +18,10 @@ Svnth = ->
     Device: require "./models/device.coffee"
     Mapping: require "./models/mapping.coffee"
   @Views =
-    Signup: require './views/authView/signup.coffee'
-    Login: require './views/authView/login.coffee'
-    ConfigPage: require './views/configpageView/configpage.coffee'
-    NavBar: require './views/navbarView/navbar.coffee'
+    Signup: require './views/auth/signup.coffee'
+    Login: require './views/auth/login.coffee'
+    ConfigPage: require './views/configPage/configPage.coffee'
+    NavBar: require './views/nav/navbar.coffee'
   @beforeInit = ->
 
   @afterInit = ->

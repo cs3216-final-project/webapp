@@ -3,7 +3,7 @@ BaseView = require "../baseView.coffee"
 
 User = require "../../models/user.coffee"
 
-signupTemplate = require "../../templates/authTemplate/signup.hbs"
+signupTemplate = require "../../templates/auth/signup.hbs"
 
 AuthHelper = require "../../helpers/auth.coffee"
 
