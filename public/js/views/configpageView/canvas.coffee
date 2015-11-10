@@ -23,14 +23,14 @@ module.exports = BaseView.extend
 
   setFullScreen: (e) ->
     $(@el).html @fulltemplate()
-    $(".non-visual").addClass("hide")
-    $(".navbar").addClass("hide")
+    $(".non-visual").hide()
+    $(".navbar").hide()
     @animations = new Animations("#fullscreen-visuals")
     #TODO: PLAY CURRENTLY RUNNING ANIMATION
 
   exitFullScreen: (e) ->
-    $(".non-visual").removeClass("hide")
-    $(".navbar").removeClass("hide")
+    $(".non-visual").show()
+    $(".navbar").show()
     @render()
     #TODO: PLAY CURRENTLY RUNNING ANIMATION
 

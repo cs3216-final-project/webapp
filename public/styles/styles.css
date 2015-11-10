@@ -318,14 +318,3 @@ body, button, input, select, textarea {
 #board {
   padding: 5px 5px;
 }
-
-
-
-/* helper css */
-.hide {
-  display: none;
-}
-
-.invisible {
-  visibility: hidden;
-}

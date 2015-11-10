@@ -1,14 +1,14 @@
 {{#if animations}}
 	{{#each animations}}
-      	<button class="list-group-item anim-btn" id="anim-{{this.key}}" value="{{this.key}}">
-        	{{this.name}}
-      	</button>
-    {{/each}}
+    <button class="list-group-item anim-btn" id="anim-{{this.key}}" value="{{this.key}}">
+      {{this.name}}
+    </button>
+  {{/each}}
 {{else}}
 	<div class="alert alert-info" role="alert">Gifs coming soon!</div>
 	{{#each gifs}}
-	  	<button class="list-group-item anim-btn" id="gif-{{this.key}}" value="{{this.key}}">
-	    	{{this.name}}
-	    </button>
+    <button class="list-group-item anim-btn" id="gif-{{this.key}}" value="{{this.key}}">
+      {{this.name}}
+    </button>
 	{{/each}}
 {{/if}}

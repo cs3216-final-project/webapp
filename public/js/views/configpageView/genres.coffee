@@ -20,7 +20,7 @@ module.exports = BaseView.extend
     return @
   events: ->
     "click .genre-btn" : "filterAnimations"
-    "click .anim-btn": "playAnimation" 
+    "click .anim-btn": "playAnimation"
 
   filterAnimations: (e) ->
     if e.currentTarget.id == "gen-gifs"
@@ -29,7 +29,7 @@ module.exports = BaseView.extend
       $("#anim-list-group").html animtemplate({
         gifs: @gifArr
       })
-    else 
+    else
       $("#gen-gifs").removeClass("active")
       # TODO grab the value and filter animations accordingly
       $("#anim-list-group").html animtemplate({
@@ -52,7 +52,7 @@ module.exports = BaseView.extend
   getAnimId: (e) ->
     ele = $(e.currentTarget)
     animId = ele.val()
-    
+
   animate: (anim) ->
     return if anim == ""
     @parent.play(anim)
@@ -65,13 +65,13 @@ module.exports = BaseView.extend
     id = "anim-"+anim
     offset = $(document.getElementById(id)).position().top
     $("#anim-list-group").scrollTop($("#anim-list-group").scrollTop() + offset)
-  
+
   updateParent: (anim) ->
     @parent.updateAnimations(anim)
 
   clearSelection: () ->
     $(".anim-btn").removeClass("active")
-  
+
   ###
   FOR WHEN TRIGGERED FROM PARENT
   ###

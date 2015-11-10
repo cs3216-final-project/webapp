@@ -40,7 +40,7 @@ module.exports = BaseView.extend
     "click .remove-map": "removeMap"
     "change .bpm-input": "setBPM"
 
-  
+
   ###
   METHODS FOR SELECTING AND UNSELECTING PROFILES
   ###
@@ -56,12 +56,12 @@ module.exports = BaseView.extend
     @clearEditIcons()
 
     headid = "#"+"hd-"+ id
-    $(headid).find(".edit-pen").addClass("hide")
-    $(headid).find(".edit-ok").removeClass("hide")
+    $(headid).find(".edit-pen").hide()
+    $(headid).find(".edit-ok").show()
 
   unselectProfile: (e) ->
     @currentMappingProfile = null
-    
+
     @parent.setCurrentMappingProfile(@currentMappingProfile)
     @parent.renderEverythingButMapProfile()
     @clearEditIcons()
@@ -69,18 +69,18 @@ module.exports = BaseView.extend
 
   clearEditIcons: ->
     #everything is set to default
-    $(".edit-pen").removeClass("hide")
-    $(".edit-ok").addClass("hide")
+    $(".edit-pen").show()
+    $(".edit-ok").hide()
 
   ###
   SAVING
   ###
   saveDevice: (e) ->
-    if global.SvnthApp.views.configpage.getCurrentDevice() 
+    if global.SvnthApp.views.configpage.getCurrentDevice()
       global.SvnthApp.views.configpage.getCurrentDevice().save({}, { headers: AuthHelper.getAuthHeaders() }).done () ->
         global.SvnthApp.views.configpage.updateCurrentDevice(global.SvnthApp.views.configpage.getCurrentDevice())
         console.log("saved")
-        $("#save-alert").fadeIn(300).delay(2000).fadeOut(300); 
+        $("#save-alert").fadeIn(300).delay(2000).fadeOut(300);
 
   ###
   ADD PROFILES
@@ -151,7 +151,7 @@ module.exports = BaseView.extend
     return unless MidiHelper.isValid(data)
     code = data[1]
     @triggerCode(code)
-  
+
   ###
   MAP REMOVE, TRIGGER, SELECT
   ###
