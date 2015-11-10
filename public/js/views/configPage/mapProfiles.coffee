@@ -72,9 +72,6 @@ module.exports = BaseView.extend
     $(".edit-pen").show()
     $(".edit-ok").hide()
 
-  ###
-  SAVING
-  ###
   saveDevice: (e) ->
     if global.SvnthApp.views.configpage.getCurrentDevice()
       global.SvnthApp.views.configpage.getCurrentDevice().save({}, { headers: AuthHelper.getAuthHeaders() }).done () ->
@@ -82,9 +79,6 @@ module.exports = BaseView.extend
         console.log("saved")
         $("#save-alert").fadeIn(300).delay(2000).fadeOut(300);
 
-  ###
-  ADD PROFILES
-  ###
   addProfile: (e) ->
     newmp = @currentDevice.addNewProfile()
     @currentMappingProfile = newmp
@@ -95,9 +89,6 @@ module.exports = BaseView.extend
 
     @refreshAndSelect(newmp.cid)
 
-  ###
-  DELETE PROFILES
-  ###
   deleteProfile: (e) ->
     profileCID = e.currentTarget.id.substring(4)
     @currentDevice.deleteProfileByCid(profileCID)
@@ -108,9 +99,6 @@ module.exports = BaseView.extend
     @clearSelections()
     @parent.render()
 
-  ###
-  SET BPM FOR EACH PROFILE
-  ###
   setBPM: (e) ->
     bpm = $(e.currentTarget).find("input").val()
     if !(bpm <= 0 || bpm > 200)
