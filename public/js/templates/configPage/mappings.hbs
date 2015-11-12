@@ -1,26 +1,31 @@
-<div class="bpm-input input-group row" id="bpm-{{currentMappingProfile.cid}}">
+<div class="bpm-input input-group row" id="bpm-{{mappingProfile.cid}}">
   <span class="input-group-btn">
     <button class="bpm-btn btn btn-default" type="button">Set BPM</button>
   </span>
-  <input type="number" class="form-control" value="{{currentMappingProfile.attributes.bpm}}">
+  <input type="number" class="form-control" value="{{mappingProfile.bpm}}">
 </div>
-{{#if currentMappingProfile.attributes.code_maps}}
+{{#if mappingProfile.code_maps}}
   <div class="maplist row">
-    {{#each currentMappingProfile.attributes.code_maps}}
-      <div class="map" id="map-{{../currentMappingProfile.cid}}-{{this.code}}" data-id="{{this.code}}">
+    {{#each mappingProfile.code_maps}}
+      <div class="map" id="map-{{../mappingProfile.cid}}-{{code}}" data-id="{{code}}">
         <div class="midi-code col-md-3">
-          <span>{{this.code}}</span>
+          <span>{{code}}</span>
         </div>
         <div class="map-details col-md-8">
-          <div class="map-animation-selector row">
-              <label for="anim">Animation: </label>
-                {{animation}}
+          <div class="animation-selector-wrapper row">
+              <select name="animation" class="form-control animation-selector" data-profile-cid="{{../mappingProfile.cid}}" data-midi-code="{{code}}">
+                {{#select animation}}
+                  {{#each ../animations}}
+                    <option value="{{this.key}}">{{this.name}}</option>
+                  {{/each}}
+                {{/select}}
+              </select>
           </div>
           <div class="map-controls row">
-            <button type="button" class="btn btn-labeled btn-primary trigger-map" data-midicode="{{this.code}}">
+            <button type="button" class="btn btn-labeled btn-primary trigger-map" data-midi-code="{{code}}" data-profile-cid="{{../mappingProfile.cid}}">
               <span class="btn-label"><i class="glyphicon glyphicon-play-circle"></i></span>Trigger
             </button>
-            <button type="button" class="btn btn-danger remove-map" data-midicode="{{this.code}}">
+            <button type="button" class="btn btn-danger remove-map" data-midi-code="{{code}}" data-profile-cid="{{../mappingProfile.cid}}">
               <i class="glyphicon glyphicon-trash"></i>
             </button>
           </div>

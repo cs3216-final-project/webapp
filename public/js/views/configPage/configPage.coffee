@@ -3,7 +3,6 @@ $ = require "jquery"
 Animations = require "../../helpers/animations.coffee"
 
 BaseView = require "../baseView.coffee"
-GenresView = require "./genres.coffee"
 CanvasView = require "./canvas.coffee"
 MapProfilesView = require "./mapProfiles.coffee"
 MidiSettingsView = require "./midiSettings.coffee"
@@ -18,7 +17,6 @@ module.exports = BaseView.extend
   initialize: ->
     @devices = global.SvnthApp.collections.devices
   initSubViews: ->
-    @genresView = new GenresView()
     @canvasView = new CanvasView()
     @mapProfilesView = new MapProfilesView()
     @midiSettingsView = new MidiSettingsView()
@@ -26,7 +24,6 @@ module.exports = BaseView.extend
     $(@el).html @template()
     @assign(@canvasView, "#animcanvas")
     @assign(@mapProfilesView, "#map-profile")
-    @assign(@genresView, "#genres")
     @assign(@midiSettingsView, "#settings")
     return @
 
@@ -49,7 +46,6 @@ module.exports = BaseView.extend
   setCurrentMappingCode: (code) ->
     @currentMappingCode = code
     anim = @currentMappingProfile.getMap(@currentMappingCode).animation
-    @genresView.triggerAnimation(anim)
 
   setCurrentMappingProfile: (mp) ->
     @currentMappingProfile = mp
@@ -66,9 +62,30 @@ module.exports = BaseView.extend
   addNewCode: (code) ->
     @currentMappingProfile.setMap(code, Animations.getDefault()["key"])
 
-  updateAnimations: (anim) ->
-    @getCurrentMappingProfile().setMap(@getCurrentMappingCode(), anim)
-    @mapProfilesView.renderOnlyMappings()
+  setAnimation: (profileCid, code, animationKey) ->
+    mappingProfile = @currentDevice.getProfileFromCid profileCid
+    mappingProfile.setMap(code, animationKey)
+    @play(animationKey)
+
+  unsetAnimation: (profileCid, code) ->
+    mappingProfile = @currentDevice.getProfileFromCid profileCid
+    mappingProfile.unsetMap(code)
+    @mapProfilesView.renderProfileMappings(mappingProfile)
+
+  triggerAnimation: (profileCid, code) ->
+    mappingProfile = @currentDevice.getProfileFromCid profileCid
+    @play mappingProfile.getMap(code).animation
+
+  triggerCode: (code) ->
+    animationMap = @currentMappingProfile.getMap(code)
+    if animationMap?
+      @play animationMap.animation
+    else
+      @addNewCode code
+      @play @currentMappingProfile.getMap(code).animation
+      @mapProfilesView.renderProfileMappings(@currentMappingProfile)
+
+    @mapProfilesView.highlightMidiCode code
 
   play: (anim) ->
     if @currentMappingProfile
@@ -78,7 +95,6 @@ module.exports = BaseView.extend
 
   renderEverythingButMapProfile: () ->
     @assign(@midiSettingsView, "#settings")
-    @assign(@genresView, "#genres")
     @assign(@canvasView, "#animcanvas")
 
   ### DEVICE FUNCTIONS ###
@@ -102,10 +118,6 @@ module.exports = BaseView.extend
       throw 'Inconsistent device state'
 
     @midiSettingsView.render()
-
-
-  triggerCode: (code) ->
-    @mapProfilesView.triggerCode(code)
 
   ###JUST FOR TESTING WITHOUT A MIDI CONTROLLER###
   midi: (message) ->

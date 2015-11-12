@@ -18,25 +18,64 @@ module.exports = BaseView.extend
 
   initialize: (options) ->
     @parent = global.SvnthApp.views.configPage
+    @animationsList = Animations.getAll()
 
   render: ->
     @currentDevice = @parent.getCurrentDevice()
     @currentMappingProfile = @parent.getCurrentMappingProfile()
+
     $(@el).html @template({
       currentDevice: if @currentDevice? then @currentDevice.toJSON() else null
       currentMappingProfile: if @currentMappingProfile? then @currentMappingProfile.toJSON() else null
     })
+
+    if @currentDevice?
+      @renderProfileMappings(mappingProfile) for mappingProfile in @currentDevice.get('mapping_profiles')
     return @
+
+  renderProfileMappings: (mappingProfile) ->
+    $("#mp-" + mappingProfile.cid).html mappingsTemplate({
+      mappingProfile: mappingProfile.toJSON()
+      animations: @animationsList
+    })
+
   events: ->
     "shown.bs.collapse .profile-collapse" : "expandProfile"
     "hide.bs.collapse .profile-collapse" : "collapseProfile"
     "click #save-profile" : "saveDevice"
     "click #add-profile" : "addProfile"
     "click .del-profile" : "deleteProfile"
-    "click .trigger-map" : "selectMap"
-    "click .remove-map": "removeMap"
+    "click .trigger-map" : "triggerAnimation"
+    "click .remove-map": "unsetAnimation"
     "change .bpm-input": "setBPM"
     "change input[name=selected-profile]": "changeProfile"
+    "change select[name=animation]": "setAnimation"
+
+  setAnimation: (e) ->
+    ele = $(e.currentTarget)
+    profileCid = ele.data('profileCid')
+    midiCode = ele.data('midiCode')
+    animationKey = ele.val()
+    @parent.setAnimation(profileCid, midiCode, animationKey)
+
+  unsetAnimation: (e) ->
+    profileCid = $(e.currentTarget).data('profileCid')
+    code = $(e.currentTarget).data('midiCode')
+    @parent.unsetAnimation(profileCid, code)
+
+  triggerAnimation: (e) ->
+    ele = $(e.currentTarget)
+    profileCid = ele.data('profileCid')
+    midiCode = ele.data('midiCode')
+    @parent.triggerAnimation(profileCid, midiCode)
+
+  highlightMidiCode:(code) ->
+    @clearSelections()
+    id = "#map-"+@currentMappingProfile.cid+"-"+code
+    $(id).addClass("selected-map")
+
+  clearSelections:() ->
+    $(".map").removeClass("selected-map")
 
   changeProfile: (e) ->
     profileCid = $(e.currentTarget).data("profileCid")
@@ -70,9 +109,7 @@ module.exports = BaseView.extend
 
     @parent.updateCurrentDevice(@currentDevice)
     @parent.setCurrentMappingProfile(@currentMappingProfile)
-    @parent.renderEverythingButMapProfile()
-
-    @refreshAndSelect(newmp.cid)
+    @render()
 
   deleteProfile: (e) ->
     profileCid = $(e.currentTarget).data("profileCid")
@@ -90,71 +127,4 @@ module.exports = BaseView.extend
       @currentMappingProfile.setBPM(bpm)
 
     @parent.setCurrentMappingProfile(@currentMappingProfile)
-    @parent.renderEverythingButMapProfile()
-    @clearSelections()
-
-  ###
-  MAP REMOVE, TRIGGER, SELECT
-  ###
-  removeMap: (e) ->
-    code = $(e.currentTarget).data('midicode')
-    @currentMappingProfile.unsetMap(code)
-    @renderOnlyMappings()
-    @parent.setCurrentMappingProfile(@currentMappingProfile)
-    @parent.renderEverythingButMapProfile()
-
-  selectMap: (e) ->
-    code = $(e.currentTarget).data('midicode')
-    @makeSelection(code)
-    @updateCodeToParent(code)
-
-  makeSelection:(code) ->
-    @clearSelections()
-    id = "#map-"+@currentMappingProfile.cid+"-"+code
-    $(id).addClass("selected-map")
-
-  clearSelections:() ->
-    $(".map").removeClass("selected-map")
-
-  updateCodeToParent: (code) ->
-    @currentMappingCode = code
-    @parent.setCurrentMappingCode(code)
-
-  scrollToCode: (code)->
-    id = "map-"+@currentMappingProfile.cid+"-"+code
-    bpmpos =$("#bpm-"+@currentMappingProfile.cid).position().top
-    colid = "#mp-"+@currentMappingProfile.cid
-    offset = $(document.getElementById(id)).position().top - bpmpos
-    $(colid).scrollTop(offset)
-    console.log(offset)
-
-  ###
-  FOR TRIGGER FROM MIDI
-  ###
-  triggerCode: (code) ->
-    if @currentMappingProfile
-      if @currentMappingProfile.getMap(code)
-        @makeSelection(code)
-        @scrollToCode(code)
-        @updateCodeToParent(code)
-      else
-        @parent.addNewCode(code)
-        @currentMappingProfile = @parent.getCurrentMappingProfile()
-        @renderOnlyMappings()
-        @makeSelection(code)
-        @scrollToCode(code)
-        @updateCodeToParent(code)
-
-  ###
-  HELPER METHODS
-  ###
-  refreshAndSelect: (cid) ->
-    @render()
-    button = "#edit-"+cid
-    $(button).click()
-
-  renderOnlyMappings: () ->
-    $("#mp-"+@currentMappingProfile.cid).html mappingsTemplate({
-      currentMappingProfile: @currentMappingProfile
-    })
 

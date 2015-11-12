@@ -54,7 +54,11 @@ $ ->
     for attr of json
       if json[attr] instanceof Backbone.Model or json[attr] instanceof Backbone.Collection
         json[attr] = json[attr].toJSON()
-    json.cid = @cid;
+      else if json[attr] instanceof Array
+        # hack to check if this is a Model/Collection array
+        if json[attr][0] instanceof Backbone.Model or json[attr][0] instanceof Backbone.Collection
+          json[attr] = (ele.toJSON() for ele in json[attr])
+    json.cid = @cid
     json
 
   Backbone.history.start
