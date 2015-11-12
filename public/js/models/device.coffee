@@ -12,6 +12,7 @@ module.exports = BaseModel.extend
   parse: (response) ->
     response.mapping_profiles = response.mapping_profiles.map (mp) ->
       new MappingProfile(mp)
+    response.connected = false
     return response
 
   getProfiles: () ->

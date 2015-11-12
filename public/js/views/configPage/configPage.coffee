@@ -6,7 +6,7 @@ BaseView = require "../baseView.coffee"
 GenresView = require "./genres.coffee"
 CanvasView = require "./canvas.coffee"
 MapProfilesView = require "./mapProfiles.coffee"
-SettingsView = require "./settings.coffee"
+MidiSettingsView = require "./midiSettings.coffee"
 
 Device = require "../../models/device.coffee"
 
@@ -16,18 +16,18 @@ module.exports = BaseView.extend
   el: "#main-wrapper"
   template: configTemplate
   initialize: ->
-    self = @
-    @genresView = new GenresView({parent: self})
-    @canvasView = new CanvasView({parent: self})
-    @mapProfilesView = new MapProfilesView({parent: self})
-    @settingsView = new SettingsView({parent: self})
     @devices = global.SvnthApp.collections.devices
+  initSubViews: ->
+    @genresView = new GenresView()
+    @canvasView = new CanvasView()
+    @mapProfilesView = new MapProfilesView()
+    @midiSettingsView = new MidiSettingsView()
   render: ->
     $(@el).html @template()
     @assign(@canvasView, "#animcanvas")
     @assign(@mapProfilesView, "#map-profile")
     @assign(@genresView, "#genres")
-    @assign(@settingsView, "#settings")
+    @assign(@midiSettingsView, "#settings")
     return @
 
   getCurrentDevice: () ->
@@ -57,6 +57,7 @@ module.exports = BaseView.extend
 
   setAllDevices: (devices) ->
     @devices = devices
+    @setDevice(@devices.first()) if @devices.size() > 0
 
   updateCurrentDevice: (device) ->
     @currentDevice = device
@@ -75,24 +76,33 @@ module.exports = BaseView.extend
       @canvasView.playAnimation(anim)
 
   renderEverythingButMapProfile: () ->
-    @assign(@settingsView, "#settings")
+    @assign(@midiSettingsView, "#settings")
     @assign(@genresView, "#genres")
     @assign(@canvasView, "#animcanvas")
 
   ### DEVICE FUNCTIONS ###
   setDevice: (device) ->
     @currentDevice = device
-    @currentMappingProfile = null
+    @currentMappingProfile = device.get("mapping_profiles")[0]
     @setCurrentMappingProfile(@currentMappingProfile)
     @render()
 
   addDevice: (device) ->
-    deviceModel = new Device({ name: device.name, given_id: device.id })
+    deviceModel = new Device({ name: device.name, given_id: device.id, connected: true })
     dbDevices = (item for item in @devices.models when item.get('given_id') == deviceModel.get('given_id'))
     if dbDevices.length == 0
       @devices.add(deviceModel)
-      if @devices.size() == 1 # first device
-        @setDevice(deviceModel)
+      @setDevice(deviceModel) if @devices.size() == 1 # first device
+    else if dbDevices.length == 1
+      dbDevices[0].set('connected', true)
+    else
+      throw 'Inconsistent device state'
+
+    @midiSettingsView.render()
+
+
+  triggerCode: (code) ->
+    @mapProfilesView.triggerCode(code)
 
   ###JUST FOR TESTING WITHOUT A MIDI CONTROLLER###
   midi: (message) ->

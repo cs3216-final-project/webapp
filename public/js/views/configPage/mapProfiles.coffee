@@ -17,7 +17,7 @@ module.exports = BaseView.extend
   template: mapProfilesTemplate
 
   initialize: (options) ->
-    @parent = options.parent
+    @parent = global.SvnthApp.views.configPage
 
   render: ->
     @currentDevice = @parent.getCurrentDevice()
@@ -25,7 +25,6 @@ module.exports = BaseView.extend
       $(@el).html @template({
         currentDevice: @currentDevice.toJSON()
       })
-      @initMidiDeviceConnection()
     else
       $(@el).html @template({
       })
@@ -45,23 +44,20 @@ module.exports = BaseView.extend
   METHODS FOR SELECTING AND UNSELECTING PROFILES
   ###
   selectProfile: (e) ->
-    profileCID = e.currentTarget.id.substring(4)
-    @currentMappingProfile = @currentDevice.getProfileFromCid(profileCID)
+    profileCid = $(e.currentTarget).data("profileCid")
+    $(@el).find("#edit-#{profileCid}").removeClass("glyphicon-triangle-right")
+    $(@el).find("#edit-#{profileCid}").addClass("glyphicon-triangle-bottom")
+    @currentMappingProfile = @currentDevice.getProfileFromCid(profileCid)
 
     @parent.setCurrentMappingProfile(@currentMappingProfile)
     @parent.renderEverythingButMapProfile()
-    @openEditIcon(profileCID)
-
-  openEditIcon: (id) ->
-    @clearEditIcons()
-
-    headid = "#"+"hd-"+ id
-    $(headid).find(".edit-pen").hide()
-    $(headid).find(".edit-ok").show()
 
   unselectProfile: (e) ->
-    @currentMappingProfile = null
+    profileCid = $(e.currentTarget).data("profileCid")
+    $(@el).find("#edit-#{profileCid}").removeClass("glyphicon-triangle-bottom")
+    $(@el).find("#edit-#{profileCid}").addClass("glyphicon-triangle-right")
 
+    @currentMappingProfile = null
     @parent.setCurrentMappingProfile(@currentMappingProfile)
     @parent.renderEverythingButMapProfile()
     @clearEditIcons()
@@ -73,9 +69,9 @@ module.exports = BaseView.extend
     $(".edit-ok").hide()
 
   saveDevice: (e) ->
-    if global.SvnthApp.views.configpage.getCurrentDevice()
-      global.SvnthApp.views.configpage.getCurrentDevice().save({}, { headers: AuthHelper.getAuthHeaders() }).done () ->
-        global.SvnthApp.views.configpage.updateCurrentDevice(global.SvnthApp.views.configpage.getCurrentDevice())
+    if global.SvnthApp.views.configPage.getCurrentDevice()
+      global.SvnthApp.views.configPage.getCurrentDevice().save({}, { headers: AuthHelper.getAuthHeaders() }).done () ->
+        global.SvnthApp.views.configPage.updateCurrentDevice(global.SvnthApp.views.configPage.getCurrentDevice())
         console.log("saved")
         $("#save-alert").fadeIn(300).delay(2000).fadeOut(300);
 
@@ -90,8 +86,8 @@ module.exports = BaseView.extend
     @refreshAndSelect(newmp.cid)
 
   deleteProfile: (e) ->
-    profileCID = e.currentTarget.id.substring(4)
-    @currentDevice.deleteProfileByCid(profileCID)
+    profileCid = $(e.currentTarget).data("profileCid")
+    @currentDevice.deleteProfileByCid(profileCid)
     @currentMappingProfile = null
 
     @parent.updateCurrentDevice(@currentDevice)
@@ -107,38 +103,6 @@ module.exports = BaseView.extend
     @parent.setCurrentMappingProfile(@currentMappingProfile)
     @parent.renderEverythingButMapProfile()
     @clearSelections()
-
-  ###
-  MIDI SETTINGS
-  ###
-  initMidiDeviceConnection: () ->
-    self = @
-    if navigator.requestMIDIAccess
-      navigator.requestMIDIAccess(sysex: false).then(
-        @onMIDISuccess.bind(self),
-        @onMIDIFailure.bind(self)
-      )
-    else
-      alert 'No MIDI support in your browser.'
-
-  onMIDISuccess: (midiAccess) ->
-    inputs = midiAccess.inputs.values()
-    input = inputs.next()
-
-    while input and !input.done
-      input.value.onmidimessage = @onMidiMessage.bind(@)
-      @parent.addDevice(input.value)
-      input = inputs.next()
-
-  onMIDIFailure: (e) ->
-    console.err("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
-
-  onMidiMessage: (message) ->
-    data = message.data
-    console.log(data)
-    return unless MidiHelper.isValid(data)
-    code = data[1]
-    @triggerCode(code)
 
   ###
   MAP REMOVE, TRIGGER, SELECT

@@ -12,7 +12,7 @@ module.exports = BaseView.extend
   template: template
   fulltemplate : fulltemplate
   initialize: (options) ->
-    @parent = options.parent
+    @parent = global.SvnthApp.views.configPage
   render: ->
     $(@el).html @template()
     @animations = new Animations("#visuals")

@@ -11,7 +11,7 @@ module.exports = BaseView.extend
   el: "#genres"
   template: template
   initialize:(options) ->
-    @parent = options.parent
+    @parent = global.SvnthApp.views.configPage
     @animArr = Animations.getAll()
   render: ->
     $(@el).html @template({

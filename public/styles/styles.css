@@ -58,9 +58,9 @@ body, button, input, select, textarea {
 
 
 /* Profile mappings */
-.add-save {
-  width: 100%;
-  margin-top: -5px;
+
+.collapse-icon {
+  padding-top: 10px;
 }
 
 #add-profile {
@@ -83,13 +83,8 @@ body, button, input, select, textarea {
   z-index: 10;
 }
 
-.profile-tab {
-  display: flex;
-}
-
-.profile-buttons {
+.profile-buttons .btn {
   float: right;
-  margin-right: inherit;
 }
 
 .profile-title {
@@ -97,7 +92,6 @@ body, button, input, select, textarea {
 }
 
 .bpm-input {
-  /*padding-bottom: 15px;*/
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -220,10 +214,6 @@ body, button, input, select, textarea {
   border-color: white;
 }
 
-.non-visual {
-  display: block;
-}
-
 
 /* ANIMATIONS AND GENRE LISTING */
 #anim-list-group {
@@ -276,8 +266,7 @@ body, button, input, select, textarea {
 #device-select {
   margin: 5px 5px;
   display: inline;
-  width: 200px;
-  /*background-color: white;*/
+  width: 75%;
 }
 
 #device-profile {
