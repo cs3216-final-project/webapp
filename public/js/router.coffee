@@ -51,7 +51,7 @@ module.exports =  Backbone.Router.extend
   after: ->
 
   index: ->
-    global.SvnthApp.views.configpage.render()
+    global.SvnthApp.views.configPage.render()
     global.SvnthApp.views.navbar.render()
 
   signup: ->

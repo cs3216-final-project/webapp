@@ -31,7 +31,7 @@ Svnth = ->
     @collections =
       devices: new S.Collections.Devices()
     @views =
-      configpage: new S.Views.ConfigPage()
+      configPage: new S.Views.ConfigPage()
       signup: new S.Views.Signup()
       login: new S.Views.Login()
       navbar: new S.Views.NavBar()
