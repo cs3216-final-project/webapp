@@ -54,6 +54,7 @@ $ ->
     for attr of json
       if json[attr] instanceof Backbone.Model or json[attr] instanceof Backbone.Collection
         json[attr] = json[attr].toJSON()
+    json.cid = @cid;
     json
 
   Backbone.history.start

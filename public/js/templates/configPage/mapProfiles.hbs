@@ -19,6 +19,13 @@
           <div class="panel-heading" role="tab" id="hd-{{this.cid}}">
             <div class= "row">
               <div class="col-md-1">
+                <input type="radio" name="selected-profile" data-profile-cid="{{this.cid}}"
+                  {{~#ifEquals ../currentMappingProfile.cid this.cid~}}
+                    checked
+                  {{~/ifEquals~}}
+                />
+              </div>
+              <div class="col-md-1">
                 <a role="button" data-toggle="collapse" data-parent="#config-profile-list" href="#col-{{this.cid}}" aria-expanded="false" aria-controls="col-{{this.cid}}">
                   <span id="edit-{{this.cid}}" class="collapse-icon glyphicon glyphicon-triangle-right"></span>
                 </a>
@@ -28,7 +35,7 @@
                   {{this.attributes.name}}
                 </h4>
               </div>
-              <div class="col-md-5 profile-buttons">
+              <div class="col-md-4 profile-buttons">
                 <button type="button" class="btn btn-danger del-profile" id="del-{{this.cid}}">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>

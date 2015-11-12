@@ -54,6 +54,7 @@ module.exports = BaseView.extend
   setCurrentMappingProfile: (mp) ->
     @currentMappingProfile = mp
     @currentMappingCode = null
+    @midiSettingsView.render()
 
   setAllDevices: (devices) ->
     @devices = devices

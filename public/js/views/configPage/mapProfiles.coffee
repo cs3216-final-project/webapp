@@ -21,52 +21,41 @@ module.exports = BaseView.extend
 
   render: ->
     @currentDevice = @parent.getCurrentDevice()
-    if @currentDevice
-      $(@el).html @template({
-        currentDevice: @currentDevice.toJSON()
-      })
-    else
-      $(@el).html @template({
-      })
+    @currentMappingProfile = @parent.getCurrentMappingProfile()
+    $(@el).html @template({
+      currentDevice: if @currentDevice? then @currentDevice.toJSON() else null
+      currentMappingProfile: if @currentMappingProfile? then @currentMappingProfile.toJSON() else null
+    })
     return @
   events: ->
-    "shown.bs.collapse .profile-collapse" : "selectProfile"
-    "hide.bs.collapse .profile-collapse" : "unselectProfile"
+    "shown.bs.collapse .profile-collapse" : "expandProfile"
+    "hide.bs.collapse .profile-collapse" : "collapseProfile"
     "click #save-profile" : "saveDevice"
     "click #add-profile" : "addProfile"
     "click .del-profile" : "deleteProfile"
     "click .trigger-map" : "selectMap"
     "click .remove-map": "removeMap"
     "change .bpm-input": "setBPM"
+    "change input[name=selected-profile]": "changeProfile"
 
+  changeProfile: (e) ->
+    profileCid = $(e.currentTarget).data("profileCid")
+    @currentMappingProfile = @currentDevice.getProfileFromCid(profileCid)
+
+    @parent.setCurrentMappingProfile(@currentMappingProfile)
 
   ###
   METHODS FOR SELECTING AND UNSELECTING PROFILES
   ###
-  selectProfile: (e) ->
+  expandProfile: (e) ->
     profileCid = $(e.currentTarget).data("profileCid")
     $(@el).find("#edit-#{profileCid}").removeClass("glyphicon-triangle-right")
     $(@el).find("#edit-#{profileCid}").addClass("glyphicon-triangle-bottom")
-    @currentMappingProfile = @currentDevice.getProfileFromCid(profileCid)
 
-    @parent.setCurrentMappingProfile(@currentMappingProfile)
-    @parent.renderEverythingButMapProfile()
-
-  unselectProfile: (e) ->
+  collapseProfile: (e) ->
     profileCid = $(e.currentTarget).data("profileCid")
     $(@el).find("#edit-#{profileCid}").removeClass("glyphicon-triangle-bottom")
     $(@el).find("#edit-#{profileCid}").addClass("glyphicon-triangle-right")
-
-    @currentMappingProfile = null
-    @parent.setCurrentMappingProfile(@currentMappingProfile)
-    @parent.renderEverythingButMapProfile()
-    @clearEditIcons()
-    @clearSelections()
-
-  clearEditIcons: ->
-    #everything is set to default
-    $(".edit-pen").show()
-    $(".edit-ok").hide()
 
   saveDevice: (e) ->
     if global.SvnthApp.views.configPage.getCurrentDevice()
@@ -122,10 +111,10 @@ module.exports = BaseView.extend
   makeSelection:(code) ->
     @clearSelections()
     id = "#map-"+@currentMappingProfile.cid+"-"+code
-    $(id).addClass("selected")
+    $(id).addClass("selected-map")
 
   clearSelections:() ->
-    $(".map").removeClass("selected")
+    $(".map").removeClass("selected-map")
 
   updateCodeToParent: (code) ->
     @currentMappingCode = code

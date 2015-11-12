@@ -59,6 +59,11 @@ body, button, input, select, textarea {
 
 /* Profile mappings */
 
+input[name=selected-profile] {
+  display: block;
+  margin-top: 0.75em;
+}
+
 .collapse-icon {
   padding-top: 10px;
 }
@@ -149,7 +154,7 @@ body, button, input, select, textarea {
   display: block;
 }
 
-.selected {
+.selected-map {
   background-color: #ccc;
 }
 
