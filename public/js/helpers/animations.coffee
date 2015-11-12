@@ -259,7 +259,7 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callbackStop, 400
 
-  cubeAttack: =>
+  cubeAttackAnim: =>
     @clearScene()
     @camera.position.z = 50
 
