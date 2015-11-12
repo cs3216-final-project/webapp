@@ -1,20 +1,22 @@
 <div class="row" id="settings-head">
-  <div class="col-md-7">
-    <span>MIDI Devices: </span>
+  <div class="col-md-9">
+    <span>My Devices: </span>
     <select id="device-select" name="device" class="form-control">
       {{#select currentDevice.given_id}}
-        <option class="list-group-item device-btn" value="--" selected>
-          Select Device
-        </option>
         {{#each devices}}
           <option value="{{this.given_id}}" data-id="{{this.id}}">
             {{this.name}}
+            {{~#if this.connected~}}
+              &nbsp;&lt;Connected&gt;
+            {{~else~}}
+              &nbsp;&lt;Disconnected&gt;
+            {{~/if~}}
           </option>
         {{/each}}
       {{/select}}
     </select>
   </div>
-  <div class="col-md-5">
+  <div class="col-md-3">
     <div  id="device-profile">
       {{#if currentMappingProfile}}
         {{currentMappingProfile.name}}

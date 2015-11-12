@@ -7,11 +7,12 @@ Config = require "../config.coffee"
 
 module.exports = BaseModel.extend
   defaults: {
-    mapping_profiles: [new MappingProfile({ name: "Profile #1" })]
+    mapping_profiles: [new MappingProfile({ name: "Default" })]
   }
   parse: (response) ->
     response.mapping_profiles = response.mapping_profiles.map (mp) ->
       new MappingProfile(mp)
+    response.connected = false
     return response
 
   getProfiles: () ->
@@ -22,10 +23,13 @@ module.exports = BaseModel.extend
     idx = _.findIndex(arr, (item) -> return item.cid == cid)
     return arr[idx]
 
-  addNewProfile: () ->
-    mp = new MappingProfile({ name: "Untitled" })
+  addNewProfile: (name = "Untitled") ->
+    mp = new MappingProfile({ name: name })
     @getProfiles().push(mp)
     return mp
+
+  addDefaultProfile: () ->
+    @addNewProfile(@defaults["mapping_profiles"][0].get('name'))
 
   deleteProfileByCid: (cid) ->
     mp = @getProfileFromCid(cid)

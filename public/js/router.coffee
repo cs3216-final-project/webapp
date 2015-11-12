@@ -32,7 +32,7 @@ module.exports =  Backbone.Router.extend
     "logout": "logout"
 
   requiresAuth:
-    ['#profile']
+    ['#profile', '']
 
   before: (params, next) ->
     isLoggedIn = AuthHelper.isLoggedIn()
@@ -51,6 +51,7 @@ module.exports =  Backbone.Router.extend
   after: ->
 
   index: ->
+    global.SvnthApp.views.configPage.initSubViews()
     global.SvnthApp.views.configPage.render()
     global.SvnthApp.views.navbar.render()
 
