@@ -83,7 +83,9 @@ module.exports = BaseView.extend
   ### DEVICE FUNCTIONS ###
   setDevice: (device) ->
     @currentDevice = device
-    @currentMappingProfile = device.get("mapping_profiles")[0]
+    mappingProfiles = device.get("mapping_profiles")
+    @currentDevice.addDefaultProfile() unless mappingProfiles? && mappingProfiles.length > 0
+    @currentMappingProfile = @currentDevice.get('mapping_profiles')[0]
     @setCurrentMappingProfile(@currentMappingProfile)
     @render()
 
