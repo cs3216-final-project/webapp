@@ -265,7 +265,7 @@ input[name=selected-profile] {
 
 /* SETTINGS AND DEVICE CONFIG */
 #settings {
-  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 #device-select {
