@@ -41,6 +41,7 @@ module.exports = BaseView.extend
     $("#col-#{@currentMappingProfile.cid}").addClass("in") # TODO: Do this in HBS
 
   events: ->
+    "click #tour-trigger": "startTour"
     "shown.bs.collapse .profile-collapse" : "expandProfile"
     "hide.bs.collapse .profile-collapse" : "collapseProfile"
     "click #save-profile" : "saveDevice"
@@ -51,6 +52,9 @@ module.exports = BaseView.extend
     "change .bpm-input": "setBPM"
     "change input[name=selected-profile]": "changeProfile"
     "change select[name=animation]": "setAnimation"
+
+  startTour: (e) ->
+    @parent.startTour()
 
   setAnimation: (e) ->
     ele = $(e.currentTarget)

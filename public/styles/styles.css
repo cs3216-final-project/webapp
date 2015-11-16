@@ -68,12 +68,11 @@ input[name=selected-profile] {
   padding-top: 10px;
 }
 
-#add-profile {
+.profile-controls {
   float: right;
 }
 
 #save-profile {
-  float: right;
   margin-left: 10px;
 }
 

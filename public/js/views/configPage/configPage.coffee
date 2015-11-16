@@ -1,6 +1,7 @@
 $ = require "jquery"
 
 Animations = require "../../helpers/animations.coffee"
+tourSettings = require "../../helpers/tour_settings.coffee"
 
 BaseView = require "../baseView.coffee"
 CanvasView = require "./canvas.coffee"
@@ -16,6 +17,8 @@ module.exports = BaseView.extend
   template: configTemplate
   initialize: ->
     @devices = global.SvnthApp.collections.devices
+    @tour = new Tour(tourSettings)
+
   initSubViews: ->
     @canvasView = new CanvasView()
     @mapProfilesView = new MapProfilesView()
@@ -25,7 +28,11 @@ module.exports = BaseView.extend
     @assign(@canvasView, "#animcanvas")
     @assign(@mapProfilesView, "#map-profile")
     @assign(@midiSettingsView, "#settings")
+    @tour.start()
     return @
+
+  startTour: () ->
+    @tour.restart()
 
   getCurrentDevice: () ->
     return @currentDevice
