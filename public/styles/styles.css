@@ -95,9 +95,8 @@ input[name=selected-profile] {
   margin-top: 10px;
 }
 
-.bpm-input {
-  padding-left: 15px;
-  padding-right: 15px;
+.bpm-input input[name=bpm] {
+  width: 82px !important;
 }
 
 #config-profile-list {
@@ -119,15 +118,14 @@ input[name=selected-profile] {
   overflow: scroll;
 }
 
-.maplist{
-  border-top: 2px solid #333;
+.maplist {
+  border-top: 1px solid #333;
   margin-top: 15px;
 }
 
 .map {
   border-bottom: 1px solid #333;
   height: 120px;
-  /*cursor:pointer;*/
 }
 
 .map > div {
@@ -218,50 +216,6 @@ input[name=selected-profile] {
   border-color: white;
 }
 
-
-/* ANIMATIONS AND GENRE LISTING */
-#anim-list-group {
-  height: 100%;
-  min-height: 50vh;
-  max-height: 50vh;
-  overflow: scroll;
-}
-
-.anim-btn {
-  width: 100%;
-}
-
-.anim-btn:hover, .anim-btn:focus{
-  background-color: #d1d2d2
-}
-
-.genre-btn {
-  margin: 2px 2px;
-  background-color: #d1d2d2;
-  border-color: #d1d2d2;
-  color: #666;
-}
-
-.genre-btn.disabled {
-  background-color: #d1d2d2;
-  border-color: #d1d2d2;
-  color: #fff;
-}
-
-.genre-btn-group {
-  text-align: center;
-}
-
-.genre-well {
-  height: 100%;
-  min-height: 15vh;
-  max-height: 15vh;
-  overflow: scroll;
-  padding: 15px 10px;
-}
-
-
-
 /* SETTINGS AND DEVICE CONFIG */
 #settings {
   margin-bottom: 5px;
@@ -286,30 +240,4 @@ input[name=selected-profile] {
 #settings-body {
   background-color: #d1d2d2;
   border-color: #d1d2d2;
-}
-
-.keyboard {
-  display: inline;
-  border-radius: 4px;
-  padding: 5px 10px;
-}
-
-.keyboard:hover {
-  padding-top: 10px;
-}
-
-.keyboard:active, .keyboard:focus {
-  padding-top: 15px;
-}
-
-.keyboard-group {
-  margin: 5px 10px;
-  text-align: center;
-}
-
-#keyspace {
-  width: 50%;
-}
-#board {
-  padding: 5px 5px;
 }

@@ -1,11 +1,15 @@
-<div class="bpm-input input-group row" id="bpm-{{mappingProfile.cid}}">
-  <span class="input-group-btn">
-    <button class="bpm-btn btn btn-default" type="button">Set BPM</button>
-  </span>
-  <input type="number" class="form-control" value="{{mappingProfile.bpm}}">
+<div class="bpm-input input-group" id="bpm-{{mappingProfile.cid}}">
+  <form class="form-inline">
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon">BPM</div>
+        <input type="number" class="form-control" name="bpm" value="{{mappingProfile.bpm}}" />
+      </div>
+    </div>
+  </form>
 </div>
 {{#if mappingProfile.code_maps}}
-  <div class="maplist row">
+  <div class="maplist">
     {{#each mappingProfile.code_maps}}
       <div class="map" id="map-{{../mappingProfile.cid}}-{{code}}" data-id="{{code}}">
         <div class="midi-code col-md-3">
