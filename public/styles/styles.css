@@ -168,11 +168,20 @@ input[name=selected-profile] {
 
 
 /* Animation Screen and Buttons */
-#visuals {
+
+#visuals, #gif-animator {
   height: 70vh;
 }
 
-#fullscreen-visuals {
+#gif-animator, #fullscreen-gif-animator {
+  display: none;
+}
+
+#gif-animator img, #fullscreen-gif-animator img {
+  width: 100%;
+}
+
+#fullscreen-visuals, #fullscreen-gif-animator {
   width: 100vw;
   height: 100vh;
   position: fixed;

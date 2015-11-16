@@ -24,6 +24,8 @@ class Animations
       { key: "discoballOnStars", name: "Discoball on Stars" },
       { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars" },
       { key: "starrySkies", name: "Starry Skies" },
+      { key: "uberTriangle", name: "Uber Triangle", preloadGif: true },
+      { key: "rotatingAxes", name: "Rotating Axes", preloadGif: true}
     ]
   @getDefault: ->
     @getAll()[0]
@@ -36,17 +38,31 @@ class Animations
     @request = 0
     @stopping = false
 
-    @scene = new THREE.Scene();
-    @camera = new THREE.PerspectiveCamera( 45, $(target).width()/$(target).height(), 0.1, 10000 )
+    @scene = new THREE.Scene()
+    @camera = new THREE.PerspectiveCamera(45, $(target).width()/$(target).height(), 0.1, 10000 )
 
     @renderer = new THREE.WebGLRenderer()
-    @renderer.setClearColor( 0x333333)
-    @renderer.setPixelRatio( window.devicePixelRatio )
+    @renderer.setClearColor(0x333333)
+    @renderer.setPixelRatio(window.devicePixelRatio)
     @renderer.setSize($(target).width(), $(target).height())
 
     $(target).append(@renderer.domElement)
     window.addEventListener('resize', @onWindowResize)
     @renderer.clear()
+
+    @preloadGifs()
+
+  preloadGifs: (imagesToPreload) ->
+    images = new Array()
+    preload = () ->
+      for imgSrc in imagesToPreload
+        img = new Image()
+        img.src = "/gifs/#{imgSrc}.gif"
+        images.push(img)
+
+    imagesToPreload =
+      (anim for anim in @constructor.getAll() when anim.preloadGif?).map((anim) -> anim.key)
+    preload(imagesToPreload)
 
   onWindowResize: =>
     @camera.aspect = $(target).width() / $(target).height()
@@ -55,6 +71,32 @@ class Animations
 
   updateBPM: (inputbpm) =>
       @bpm = 60000/inputbpm
+
+  createGifAnim: (filename) =>
+    @clearScene()
+    $("#visuals").hide()
+    $("#fullscreen-visuals").hide()
+
+    $("#gif-animator").html("<img src='/gifs/#{filename}' />")
+    $("#fullscreen-gif-animator").html("<img src='/gifs/#{filename}' />")
+
+    $("#gif-animator").show()
+    $("#fullscreen-gif-animator").show()
+
+    @animateFn = ()  =>
+    callback = =>
+      $("#gif-animator").hide()
+      $("#visuals").show()
+
+  uberTriangleAnim: =>
+    callback = @createGifAnim("uberTriangle.gif")
+    @render()
+    @callbackTimeout = setTimeout callback, 5000
+
+  rotatingAxesAnim: =>
+    callback = @createGifAnim("rotatingAxes.gif")
+    @render()
+    @callbackTimeout = setTimeout callback, 5000
 
   flashAnim: =>
     @clearScene()
@@ -1329,8 +1371,10 @@ class Animations
 
   clearScene: =>
     @stopping = true
-    # _.each @scene.children, (object) =>
-    #   @scene.remove(object)
+    $("#visuals").show()
+    $("#fullscreen-visuals").show()
+    $("#gif-animator").hide()
+    $("#fullscreen-gif-animator").hide()
     cancelAnimationFrame(@request)
     cancelAnimationFrame(@neverReq)
     cancelAnimationFrame(@sphereReq)

@@ -126,4 +126,9 @@ class App
     device.save!
     device.to_json(include: { mapping_profiles: {include: :code_maps }})
   end
+
+  get '/process_gif' do
+    sheet = SpriteSheet::Sheet.new("public/gifs/#{params[:filename]}")
+    sheet.write_to("public/gifs/#{params[:filename]}_sprite.png")
+  end
 end
