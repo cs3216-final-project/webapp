@@ -1,40 +1,50 @@
 $ = require "jquery"
 
 BaseView = require "../baseView.coffee"
-template = require "../../templates/configPage/canvas.hbs"
+template = require "../../templates/live/live.hbs"
 
-RTC = require "../../helpers/rtc.coffee"
 Animations = require "../../helpers/animations.coffee"
+RTC = require "../../helpers/rtc.coffee"
 
 module.exports = BaseView.extend
-  el: "#animcanvas"
+  el: "#main-wrapper"
   template: template
-  initialize: (options) ->
-    @parent = global.SvnthApp.views.configPage
-    @createPresentationLink()
+  initialize: ->
+    @key =""
   render: ->
-    $(@el).html @template({sharedkey: @key})
-    @animations = new Animations("#visuals")
+    @makeTemplate(true)
+    @showMessage()
+    @beginRTCConnection(@key)
     return @
 
-  createPresentationLink: () ->
-    @key = Math.random().toString(36).substring(0,9).replace('.', '')
-    @rtc = new RTC(@key,true)
+  beginRTCConnection: () ->
+    @rtc = new RTC(@key, false, @)
 
+  makeTemplate: (waiting) ->
+    $(@el).html @template({waiting:waiting})
+    @animations = new Animations(".presentation-view")
+  
+  connected: () ->
+    @makeTemplate(false)
+    callback= () =>
+      $(".rtc-sign").fadeOut('slow')
+
+    setTimeout callback, 1000
+
+  showMessage: ()->
+    $(".rtc-sign").show()
+
+  setKey: (key) ->
+    @key = key
+    
   playAnimation: (anim, bpm = null) ->
+    console.log(anim)
+    console.log(bpm)
     if bpm
-      @sendAnimation(anim, bpm)
       @animations.updateBPM(bpm)
     else
-      @sendAnimation(anim, 128)
       @animations.updateBPM(128)
     @animate(anim)
-
-  sendAnimation: (anim, bpm) ->
-    if @rtc
-      if @rtc.peerConnection.iceConnectionState != 'disconnected'
-        message = {bpm: bpm, anim: anim}
-        @rtc.dataChannel.send JSON.stringify(message)
 
     ### leave this here in case, we need to do the time check for when testing with a real midi device###
   # playAnimationWithMap: (map, currentBPM) ->

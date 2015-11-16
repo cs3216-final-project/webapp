@@ -28,3 +28,9 @@ module.exports = BaseView.extend
     @close()
     @render()
 
+  showNavbar: ()->
+    $(".navbar").show()
+
+  hideNavbar: () ->
+    $(".navbar").hide()
+

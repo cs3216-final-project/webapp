@@ -30,6 +30,8 @@ module.exports =  Backbone.Router.extend
     "signup": "signup"
     "login": "login"
     "logout": "logout"
+    "test": "test"
+    "live/:key" : "live"
 
   requiresAuth:
     ['#profile', '']
@@ -42,6 +44,7 @@ module.exports =  Backbone.Router.extend
     global.SvnthApp.views.login.close()
 
     global.SvnthApp.views.navbar.restartNavProfile()
+    global.SvnthApp.views.navbar.showNavbar()
 
     if needAuth && !isLoggedIn
       @navigate("/login", { trigger : true })
@@ -70,3 +73,8 @@ module.exports =  Backbone.Router.extend
   logout: ->
     AuthHelper.logout()
     @navigate("/", { trigger: true })
+
+  live: (key) ->
+    global.SvnthApp.views.navbar.hideNavbar()
+    global.SvnthApp.views.live.setKey(key)
+    global.SvnthApp.views.live.render()

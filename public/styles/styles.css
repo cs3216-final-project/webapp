@@ -165,8 +165,6 @@ input[name=selected-profile] {
   display: block;
 }
 
-
-
 /* Animation Screen and Buttons */
 
 #visuals, #gif-animator {
@@ -208,9 +206,13 @@ input[name=selected-profile] {
   color: white;
 }
 
-.btn-fullscreen {
+#visuals-canvas {
+  height:100%;
+}
+
+.btn-fullscreen, .btn-fullscreen:visited {
   position: absolute;
-  left: inherit=;
+  left: inherit;
   right: 0;
   top: inherit;
   bottom: 0;
@@ -223,6 +225,10 @@ input[name=selected-profile] {
 .btn-fullscreen:hover, .btn-fullscreen:focus {
   background-color: #555;
   border-color: white;
+}
+
+.livebar {
+  padding-top:20px;
 }
 
 /* SETTINGS AND DEVICE CONFIG */
@@ -249,4 +255,27 @@ input[name=selected-profile] {
 #settings-body {
   background-color: #d1d2d2;
   border-color: #d1d2d2;
+}
+
+/** Live Page **/
+.presentation-view, .testview {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.rtc-sign {
+  position: absolute;
+  text-align: center;
+  background-color: #eee;
+  top: 30vh;
+  bottom: 40vh;
+  left: 35vw;
+  width: 30vw;
+  opacity: 0.8;
+  padding-top: 50px;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
 }

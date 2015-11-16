@@ -37,6 +37,7 @@ class Animations
     @neverReq = 0
     @request = 0
     @stopping = false
+    @target = target
 
     @scene = new THREE.Scene()
     @camera = new THREE.PerspectiveCamera(45, $(target).width()/$(target).height(), 0.1, 10000 )
@@ -46,7 +47,7 @@ class Animations
     @renderer.setPixelRatio(window.devicePixelRatio)
     @renderer.setSize($(target).width(), $(target).height())
 
-    $(target).append(@renderer.domElement)
+    $(@target).append(@renderer.domElement)
     window.addEventListener('resize', @onWindowResize)
     @renderer.clear()
 
@@ -65,9 +66,9 @@ class Animations
     preload(imagesToPreload)
 
   onWindowResize: =>
-    @camera.aspect = $(target).width() / $(target).height()
+    @camera.aspect = $(@target).width() / $(@target).height()
     @camera.updateProjectionMatrix()
-    @renderer.setSize $(target).width(), $(target).height()
+    @renderer.setSize $(@target).width(), $(@target).height()
 
   updateBPM: (inputbpm) =>
       @bpm = 60000/inputbpm
