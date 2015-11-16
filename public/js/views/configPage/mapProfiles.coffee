@@ -38,6 +38,7 @@ module.exports = BaseView.extend
       mappingProfile: mappingProfile.toJSON()
       animations: @animationsList
     })
+    $("#col-#{@currentMappingProfile.cid}").addClass("in") # TODO: Do this in HBS
 
   events: ->
     "shown.bs.collapse .profile-collapse" : "expandProfile"
