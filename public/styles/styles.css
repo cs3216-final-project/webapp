@@ -286,12 +286,11 @@ input[name=selected-profile] {
   position: absolute;
   text-align: center;
   background-color: #eee;
-  top: 30vh;
-  bottom: 40vh;
+  top: 45vh;
+  bottom: 50vh;
   left: 35vw;
   width: 30vw;
   opacity: 0.8;
-  padding-top: 50px;
   -moz-border-radius: 50px;
   -webkit-border-radius: 50px;
 }
