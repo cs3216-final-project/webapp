@@ -175,8 +175,12 @@ input[name=selected-profile] {
   display: none;
 }
 
-#gif-animator img, #fullscreen-gif-animator img {
+#gif-animator video, #fullscreen-gif-animator video {
   width: 100%;
+}
+
+#gif-animator video, #fullscreen-gif-animator video {
+  height: 100%;
 }
 
 #fullscreen-gif-animator {
@@ -193,7 +197,7 @@ input[name=selected-profile] {
 
 .btn-gif-fullscreen {
   z-index: 100;
-  margin-top: -112px;
+  margin-top: -50px;
   display: block;
   width: 35px;
   position: relative;

@@ -23,7 +23,7 @@ module.exports = BaseView.extend
   makeTemplate: (waiting) ->
     $(@el).html @template({waiting:waiting})
     @animations = new Animations(".presentation-view")
-  
+
   connected: () ->
     @makeTemplate(false)
     callback= () =>
@@ -36,7 +36,7 @@ module.exports = BaseView.extend
 
   setKey: (key) ->
     @key = key
-    
+
   playAnimation: (anim, bpm = null) ->
     console.log(anim)
     console.log(bpm)

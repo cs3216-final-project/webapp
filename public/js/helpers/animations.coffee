@@ -25,8 +25,9 @@ class Animations
       { key: "discoballOnStars", name: "Discoball on Stars" },
       { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars" },
       { key: "starrySkies", name: "Starry Skies" },
-      { key: "uberTriangle", name: "Uber Triangle", preloadGif: true },
-      { key: "rotatingAxes", name: "Rotating Axes", preloadGif: true}
+      { key: "uberTriangle", name: "Uber Triangle", preload: true },
+      { key: "rotatingAxes", name: "Rotating Axes", preload: true}
+      { key: "output", name: "OP", preload: true}
     ]
   @getDefault: ->
     @getAll()[0]
@@ -52,19 +53,19 @@ class Animations
     window.addEventListener('resize', @onWindowResize)
     @renderer.clear()
 
-    @preloadGifs()
+    @preloadVideoAnimations()
 
-  preloadGifs: (imagesToPreload) ->
-    images = new Array()
+  preloadVideoAnimations: (filesToPreload) ->
+    video = document.createElement('video')
     preload = () ->
-      for imgSrc in imagesToPreload
-        img = new Image()
-        img.src = "/gifs/#{imgSrc}.gif"
-        images.push(img)
+      for videoSrc in filesToPreload
+        source = document.createElement('source')
+        source.src = "/videos/#{videoSrc}.mp4"
+        video.appendChild(source)
 
-    imagesToPreload =
-      (anim for anim in @constructor.getAll() when anim.preloadGif?).map((anim) -> anim.key)
-    preload(imagesToPreload)
+    filesToPreload =
+      (anim for anim in @constructor.getAll() when anim.preload?).map((anim) -> anim.key)
+    preload(filesToPreload)
 
   onWindowResize: =>
     @camera.aspect = $(@target).width() / $(@target).height()
@@ -76,32 +77,38 @@ class Animations
 
   createGifAnim: (filename) =>
     @clearScene()
+    animationHtml = "<video loop autoplay><source src='/videos/#{filename}.mp4' /></video>"
     $("#visuals").hide()
-    $("#fullscreen-visuals").hide()
-
-    $("#gif-animator").html("<img src='/gifs/#{filename}' />")
-    $("#fullscreen-gif-animator").html("<img src='/gifs/#{filename}' />")
+    $(".presentation-view").hide()
 
     $("#gif-wrapper").show()
     $("#fullscreen-gif-animator").show()
 
+    $("#gif-animator").html(animationHtml)
+    $("#fullscreen-gif-animator").html(animationHtml)
+
+
     @animateFn = ()  =>
     callback = =>
-      $("#gif-animator").hide()
+      $("#gif-wrapper").hide()
       $("#visuals").show()
 
   blankAnim: ->
-    @clearScene()
     @animateFn = () =>
     @render()
 
   uberTriangleAnim: =>
-    callback = @createGifAnim("uberTriangle.gif")
+    callback = @createGifAnim("uberTriangle")
     @render()
-    # @callbackTimeout = setTimeout callback, 5000
+    @callbackTimeout = setTimeout callback, 5000
 
   rotatingAxesAnim: =>
-    callback = @createGifAnim("rotatingAxes.gif")
+    callback = @createGifAnim("rotatingAxes")
+    @render()
+    @callbackTimeout = setTimeout callback, 5000
+
+  outputAnim: =>
+    callback = @createGifAnim("output")
     @render()
     @callbackTimeout = setTimeout callback, 5000
 
@@ -125,6 +132,7 @@ class Animations
     @callbackTimeout = setTimeout callback, 400
 
   spinningDiamondAnim: =>
+    @showCanvas()
     @camera.position.z = 50
 
     #LINES
@@ -650,6 +658,7 @@ class Animations
     # @callbackTimeout = setTimeout callback, 400
 
   minimalSphereMeshAnim: =>
+    @showCanvas()
     clearTimeout(@callbackTimeout) if @callbackTimeout
     @callbackTimeout = null
     @scene.remove(@meshintro)
@@ -1376,12 +1385,17 @@ class Animations
       @animateFn()
       @renderer.render(@scene, @camera)
 
-  clearScene: =>
-    @stopping = true
+  showCanvas: () =>
     $("#visuals").show()
-    $("#fullscreen-visuals").show()
+    $(".presentation-view").show()
+
     $("#gif-wrapper").hide()
     $("#fullscreen-gif-animator").hide()
+
+  clearScene: =>
+    @stopping = true
+    @showCanvas()
+
     cancelAnimationFrame(@request)
     cancelAnimationFrame(@neverReq)
     cancelAnimationFrame(@sphereReq)
