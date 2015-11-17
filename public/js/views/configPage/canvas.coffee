@@ -31,8 +31,7 @@ module.exports = BaseView.extend
     @animate(anim)
 
   sendAnimation: (anim, bpm) ->
-    if @rtc
-      if @rtc.peerConnection.iceConnectionState != 'disconnected'
+    if @rtc.peerConnection? and @rtc.peerConnection.iceConnectionState != 'disconnected'
         message = {bpm: bpm, anim: anim}
         @rtc.dataChannel.send JSON.stringify(message)
 

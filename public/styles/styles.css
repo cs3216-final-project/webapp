@@ -171,7 +171,7 @@ input[name=selected-profile] {
   height: 70vh;
 }
 
-#gif-animator, #fullscreen-gif-animator {
+#gif-wrapper, #fullscreen-gif-animator {
   display: none;
 }
 
@@ -179,7 +179,7 @@ input[name=selected-profile] {
   width: 100%;
 }
 
-#fullscreen-visuals, #fullscreen-gif-animator {
+#fullscreen-gif-animator {
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -187,27 +187,19 @@ input[name=selected-profile] {
   left: 0;
 }
 
-.btn-smallscreen {
-  position: absolute;
-  left: initial;
-  right: 0;
-  top: initial;
-  bottom: 0;
-  margin-bottom: 5px;
-  margin-right: 5px;
-  background-color: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-
-.btn-smallscreen:hover, .btn-smallscreen:focus {
-  background-color: #555;
-  border-color: white;
-  color: white;
-}
-
 #visuals-canvas {
   height:100%;
+}
+
+.btn-gif-fullscreen {
+  z-index: 100;
+  margin-top: -112px;
+  display: block;
+  width: 35px;
+  position: relative;
+  float: right;
+  background-color: transparent;
+  border-color: white;
 }
 
 .btn-fullscreen, .btn-fullscreen:visited {
@@ -222,7 +214,10 @@ input[name=selected-profile] {
   border-color: white;
 }
 
-.btn-fullscreen:hover, .btn-fullscreen:focus {
+.btn-fullscreen:hover,
+.btn-fullscreen:focus,
+.btn-gif-fullscreen:hover,
+.btn-gif-fullscreen:focus {
   background-color: #555;
   border-color: white;
 }

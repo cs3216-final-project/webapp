@@ -81,7 +81,7 @@ class Animations
     $("#gif-animator").html("<img src='/gifs/#{filename}' />")
     $("#fullscreen-gif-animator").html("<img src='/gifs/#{filename}' />")
 
-    $("#gif-animator").show()
+    $("#gif-wrapper").show()
     $("#fullscreen-gif-animator").show()
 
     @animateFn = ()  =>
@@ -92,7 +92,7 @@ class Animations
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
     @render()
-    @callbackTimeout = setTimeout callback, 5000
+    # @callbackTimeout = setTimeout callback, 5000
 
   rotatingAxesAnim: =>
     callback = @createGifAnim("rotatingAxes.gif")
@@ -1374,7 +1374,7 @@ class Animations
     @stopping = true
     $("#visuals").show()
     $("#fullscreen-visuals").show()
-    $("#gif-animator").hide()
+    $("#gif-wrapper").hide()
     $("#fullscreen-gif-animator").hide()
     cancelAnimationFrame(@request)
     cancelAnimationFrame(@neverReq)
