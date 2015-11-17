@@ -50,6 +50,9 @@ module.exports = BaseView.extend
     "click .trigger-map" : "triggerAnimation"
     "click .remove-map": "unsetAnimation"
     "change .bpm-input": "setBPM"
+    "submit .bpm-input form": (e) ->
+      $(e.currentTarget).find('input[type=number]').blur()
+      e.preventDefault()
     "change input[name=selected-profile]": "changeProfile"
     "change select[name=animation]": "setAnimation"
 
