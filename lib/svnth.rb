@@ -60,7 +60,8 @@ class App
   end
 
   post '/users/?' do
-    user = User.create(JSON.parse(request.body.read))
+    user_params = JSON.parse(request.body.read)
+    user = User.create(email: user_params["email"], password: user_params["password"])
     if user.errors.messages.empty?
       user.to_json
     else
