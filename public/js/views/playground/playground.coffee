@@ -12,9 +12,9 @@ module.exports = BaseView.extend
   template: playgroundTemplate
   initialize: ->
     self = @
+  render: ->
     _.bindAll(@, 'handleKeyboardTrigger')
     $(document).on('keydown', @handleKeyboardTrigger)
-  render: ->
     @$el.html @template()
     @hideNavbar()
     Keycode.setDict()
