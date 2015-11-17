@@ -3,8 +3,8 @@ $ = require "jquery"
 class Animations
   @getAll: ->
     [
-      { key: "flash", name: "Flashing Colors" },
       { key: "spinningDiamond", name: "Spinning Diamond" },
+      { key: "flash", name: "Flashing Colors" },
       { key: "randomBgColors", name: "Random Background Colors" },
       { key: "rotatingCube", name: "Rotating Cube" },
       { key: "enhancedRotatingCube", name: "Enhanced Rotating Cube" },
