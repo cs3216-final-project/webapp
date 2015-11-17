@@ -23,6 +23,7 @@ Svnth = ->
     ConfigPage: require './views/configPage/configPage.coffee'
     NavBar: require './views/nav/navbar.coffee'
     Live: require './views/live/live.coffee'
+    Playground: require './views/playground/playground.coffee'
   @beforeInit = ->
 
   @afterInit = ->
@@ -37,6 +38,7 @@ Svnth = ->
       login: new S.Views.Login()
       navbar: new S.Views.NavBar()
       live: new S.Views.Live()
+      playground: new S.Views.Playground()
     @afterInit.apply this  if typeof (@afterInit) is 'function'
     return
   ).bind(this)

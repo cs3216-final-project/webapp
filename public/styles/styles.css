@@ -15,8 +15,6 @@ body, button, input, select, textarea {
   padding-top: 60px;
 }
 
-
-
 /* NAV BAR */
 @media (min-width: 992px) {
   body {
@@ -253,7 +251,7 @@ input[name=selected-profile] {
 }
 
 /** Live Page **/
-.presentation-view, .testview {
+.presentation-view{
   width: 100vw;
   height: 100vh;
   position: absolute;
@@ -274,3 +272,26 @@ input[name=selected-profile] {
   -moz-border-radius: 50px;
   -webkit-border-radius: 50px;
 }
+
+/** Keyboard Page **/
+#playground-visuals {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#playground-hint {
+  position: absolute;
+  text-align: center;
+  background-color: #eee;
+  top: 45vh;
+  bottom: 50vh;
+  left: 35vw;
+  width: 30vw;
+  opacity: 0.8;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+}
+

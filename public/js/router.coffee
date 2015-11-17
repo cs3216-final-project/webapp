@@ -30,7 +30,7 @@ module.exports =  Backbone.Router.extend
     "signup": "signup"
     "login": "login"
     "logout": "logout"
-    "test": "test"
+    "playground": "playground"
     "live/:key" : "live"
 
   requiresAuth:
@@ -78,3 +78,7 @@ module.exports =  Backbone.Router.extend
     global.SvnthApp.views.navbar.hideNavbar()
     global.SvnthApp.views.live.setKey(key)
     global.SvnthApp.views.live.render()
+
+  playground: () ->
+    global.SvnthApp.views.playground.setElement('#main-wrapper')
+    global.SvnthApp.views.playground.render()
