@@ -175,6 +175,7 @@ input[name=selected-profile] {
 
 #gif-animator img, #fullscreen-gif-animator img {
   width: 100%;
+  height: 100%;
 }
 
 #fullscreen-gif-animator {
@@ -189,25 +190,13 @@ input[name=selected-profile] {
   height:100%;
 }
 
-.btn-gif-fullscreen {
+.btn-gif-fullscreen, .btn-fullscreen {
   z-index: 100;
-  margin-top: -112px;
+  margin-top: -45px;
   display: block;
   width: 35px;
   position: relative;
   float: right;
-  background-color: transparent;
-  border-color: white;
-}
-
-.btn-fullscreen, .btn-fullscreen:visited {
-  position: absolute;
-  left: inherit;
-  right: 0;
-  top: inherit;
-  bottom: 0;
-  margin-bottom: 5px;
-  margin-right: 5px;
   background-color: transparent;
   border-color: white;
 }

@@ -87,8 +87,7 @@ class Animations
 
     @animateFn = ()  =>
     callback = =>
-      $("#gif-animator").hide()
-      $("#visuals").show()
+      @showCanvas()
 
   blankAnim: ->
     @clearScene()
@@ -1376,12 +1375,17 @@ class Animations
       @animateFn()
       @renderer.render(@scene, @camera)
 
-  clearScene: =>
-    @stopping = true
+  showCanvas: =>
     $("#visuals").show()
     $("#fullscreen-visuals").show()
+
     $("#gif-wrapper").hide()
     $("#fullscreen-gif-animator").hide()
+
+  clearScene: =>
+    @stopping = true
+    @showCanvas()
+
     cancelAnimationFrame(@request)
     cancelAnimationFrame(@neverReq)
     cancelAnimationFrame(@sphereReq)
