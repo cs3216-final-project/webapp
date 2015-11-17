@@ -3,6 +3,7 @@ $ = require "jquery"
 class Animations
   @getAll: ->
     [
+      { key: "blank", name: "Blank" },
       { key: "spinningDiamond", name: "Spinning Diamond" },
       { key: "flash", name: "Flashing Colors" },
       { key: "randomBgColors", name: "Random Background Colors" },
@@ -88,6 +89,11 @@ class Animations
     callback = =>
       $("#gif-animator").hide()
       $("#visuals").show()
+
+  blankAnim: ->
+    @clearScene()
+    @animateFn = () =>
+    @render()
 
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
