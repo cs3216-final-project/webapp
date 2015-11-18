@@ -91,7 +91,6 @@ class Animations
 
   blankAnim: ->
     @animateFn = () =>
-    @render()
 
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
