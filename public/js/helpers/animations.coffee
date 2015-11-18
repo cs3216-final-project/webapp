@@ -90,7 +90,6 @@ class Animations
       @showCanvas()
 
   blankAnim: ->
-    @clearScene()
     @animateFn = () =>
     @render()
 
