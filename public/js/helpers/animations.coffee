@@ -89,8 +89,7 @@ class Animations
     callback = =>
       @showCanvas()
 
-  blankAnim: ->
-    @animateFn = () =>
+  blankAnim: =>
 
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
