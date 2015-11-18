@@ -1,21 +1,21 @@
 <div class="alert alert-info" id="save-alert" role="alert">Saved Configurations!</div>
 <div class="row profile-tab">
-  <span class="lead col-md-6">Profiles</span>
-  <div class="profile-controls col-md-6">
-    <button type="button" class="btn btn-primary" id="tour-trigger">
-      See Tour
+  <span class="lead col-md-4">Profiles</span>
+  <div class="profile-controls col-md-8">
+    <button type="button" class="btn btn-info" id="tour-trigger">
+      <i class="glyphicon glyphicon-question-sign"></i>
     </button>
     {{#if currentDevice}}
-      <button type="button" class="btn btn-warning" id="save-profile">
-        <i class="glyphicon glyphicon-floppy-save"></i>
+      <button type="button" class="btn btn-primary" id="save-profile">
+        <i class="glyphicon glyphicon-floppy-disk"></i>
       </button>
-      <button type="button" class="btn btn-info" id="add-profile">
+      <button type="button" class="btn btn-primary" id="add-profile">
         <i class="glyphicon glyphicon-plus"></i>
       </button>
     {{/if}}
   </div>
 </div>
-<div class="panel-group" id="config-profile-list" role="tablist" aria-multiselectable="false">
+<div class="row panel-group" id="config-profile-list" role="tablist" aria-multiselectable="false">
   {{#if currentDevice}}
     {{#each currentDevice.mapping_profiles}}
         <div class="panel panel-default">
@@ -34,11 +34,17 @@
                 </a>
               </div>
               <div class="col-md-5">
-                <h4 class="panel-title profile-title">
-                  {{this.name}}
-                </h4>
+                <div class="panel-title profile-title title-input input-group" data-profile-cid="{{this.cid}}">
+                  <form class="form-inline">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="text" class="form-control title-input" name="title" value="{{this.name}}" />
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
-              <div class="col-md-4 profile-buttons">
+              <div class="col-md-5 profile-buttons">
                 <button type="button" class="btn btn-danger del-profile" id="del-{{this.cid}}">
                   <i class="glyphicon glyphicon-trash"></i>
                 </button>

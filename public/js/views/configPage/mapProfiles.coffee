@@ -50,11 +50,12 @@ module.exports = BaseView.extend
     "click .trigger-map" : "triggerAnimation"
     "click .remove-map": "unsetAnimation"
     "change .bpm-input": "setBPM"
-    "submit .bpm-input form": (e) ->
+    "submit .bpm-input form, .profile-title form": (e) ->
       $(e.currentTarget).find('input[type=number]').blur()
       e.preventDefault()
     "change input[name=selected-profile]": "changeProfile"
     "change select[name=animation]": "setAnimation"
+    "change .profile-title" : "setTitle"
 
   startTour: (e) ->
     @parent.startTour()
@@ -135,4 +136,10 @@ module.exports = BaseView.extend
       @currentMappingProfile.setBPM(bpm)
 
     @parent.setCurrentMappingProfile(@currentMappingProfile)
+
+  setTitle: (e) ->
+    title = $(e.currentTarget).find("input").val()
+    profileCid = $(e.currentTarget).data("profileCid")
+    mp = @currentDevice.getProfileFromCid(profileCid).setTitle(title)
+
 

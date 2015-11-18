@@ -33,3 +33,7 @@ module.exports = BaseModel.extend
     @set("bpm", bpm)
   getBPM: () ->
     @get("bpm")
+
+  setTitle: (title) ->
+    @set("name", title)
+

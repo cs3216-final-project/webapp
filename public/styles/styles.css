@@ -12,7 +12,9 @@ body, button, input, select, textarea {
 }
 
 #main-wrapper {
-  padding-top: 60px;
+  padding-top: 50px;
+  height: 100vh;
+  width: 100vw;
 }
 
 /* NAV BAR */
@@ -32,7 +34,7 @@ body, button, input, select, textarea {
 }
 
 .navbar-default .nav-synth>.active>a, .navbar-default .nav-synth>.active>a:focus, .navbar-default .nav-synth>.active>a:hover {
-  background-color: #bec0c1
+  background-color: #f9f9f9
 }
 
 .nav-synth>li:hover {
@@ -54,6 +56,18 @@ body, button, input, select, textarea {
   color: #d9534f;
 }
 
+/* Config View */
+.config-page, .config-page > div, #map-profile {
+  height: 100%;
+}
+
+.profile-tab div, #settings div {
+  height: 10%;
+}
+
+#animcanvas {
+  height: 90%;
+}
 
 /* Profile mappings */
 
@@ -66,12 +80,13 @@ input[name=selected-profile] {
   padding-top: 10px;
 }
 
-.profile-controls {
-  float: right;
+.lead, .profile-controls {
+  margin: 10px 0px;
 }
 
-#save-profile {
-  margin-left: 10px;
+.profile-controls > .btn {
+  float: right;
+  margin: 0px 5px;
 }
 
 #save-alert {
@@ -85,12 +100,24 @@ input[name=selected-profile] {
   z-index: 10;
 }
 
+.profile-buttons {
+  padding-right: 25px;
+}
+
 .profile-buttons .btn {
   float: right;
 }
 
-.profile-title {
-  margin-top: 10px;
+.title-input {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.profile-title input:-webkit-autofill {
+    background-color: none !important;
+    background-image: none !important;
+    color: transparent !important;
 }
 
 .bpm-input input[name=bpm] {
@@ -98,21 +125,15 @@ input[name=selected-profile] {
 }
 
 #config-profile-list {
-  height: 100%;
-  min-height: 75vh;
-  max-height: 75vh;
+  height: 90%;
+  margin-bottom: 0;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-#mappings-config {
-  height: 100%;
-  overflow: auto;
-}
-
 .map-elements {
   height: 100%;
-  max-height: 60vh;
+  max-height: 70vh;
   overflow: scroll;
 }
 
@@ -123,7 +144,7 @@ input[name=selected-profile] {
 
 .map {
   border-bottom: 1px solid #333;
-  height: 120px;
+  height: 60px;
 }
 
 .map > div {
@@ -137,7 +158,7 @@ input[name=selected-profile] {
 
 .map .midi-code {
   text-align: center;
-  font-size: 46px;
+  font-size: 23px;
   font-weight: bold;
   border-right: 1px solid #333;
   padding-left: 0px;
@@ -145,7 +166,7 @@ input[name=selected-profile] {
 }
 
 .map .midi-code > span {
-  margin-top: 25px;
+  margin-top: 12px;
   display: block;
 }
 
@@ -154,19 +175,20 @@ input[name=selected-profile] {
 }
 
 .map-details {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 5px;
 }
 
 .map-controls {
-  margin-top: 8px;
   display: block;
+  padding-top: 10px;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: center;
 }
 
 /* Animation Screen and Buttons */
-
 #visuals, #gif-animator {
-  height: 70vh;
+  height: 100%;
 }
 
 #gif-wrapper, #fullscreen-gif-animator {
@@ -214,10 +236,6 @@ input[name=selected-profile] {
 }
 
 /* SETTINGS AND DEVICE CONFIG */
-#settings {
-  margin-bottom: 5px;
-}
-
 #device-select {
   margin: 5px 5px;
   display: inline;
@@ -230,8 +248,8 @@ input[name=selected-profile] {
 }
 
 #settings-head {
-  background-color: #bec0c1;
   border-color: #bec0c1;
+  padding: 5px 0px;
 }
 
 #settings-body {
