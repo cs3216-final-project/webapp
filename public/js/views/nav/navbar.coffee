@@ -10,6 +10,7 @@ module.exports = BaseView.extend
   template: navbarTemplate
   initialize: ->
   render: ->
+    route = Backbone.history.getFragment()
     if AuthHelper.isLoggedIn()
       @model = new global.SvnthApp.Models.User({ id: AuthHelper.getUserId() })
       model = @model
@@ -18,10 +19,10 @@ module.exports = BaseView.extend
       @model.fetch(
         headers: AuthHelper.getAuthHeaders()
         success: ->
-          $(el).html template({ user: model.toJSON() })
+          $(el).html template({ user: model.toJSON(), route: route })
       )
     else
-      $(@el).html @template()
+      $(@el).html @template({ route: route })
     return @
 
   restartNavProfile: ->
