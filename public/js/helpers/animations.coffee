@@ -1,4 +1,5 @@
 $ = require "jquery"
+_ = require "underscore"
 
 class Animations
   @getAll: ->
@@ -6,7 +7,11 @@ class Animations
       { key: "blank", name: "Blank" },
       { key: "spinningDiamond", name: "Spinning Diamond" },
       { key: "flash", name: "Flashing Colors" },
+      { key: "flashToBlack", name: "Flashing Colors To Black" },
+      { key: "singleRandomBgColor", name: "Single Random Background Color" },
+      { key: "backgroundColorShift", name: "Shift Random Background Color" },
       { key: "randomBgColors", name: "Random Background Colors" },
+      { key: "spinningCircleZoom", name: "Spinning Circle Zoom"},
       { key: "rotatingCube", name: "Rotating Cube" },
       { key: "enhancedRotatingCube", name: "Enhanced Rotating Cube" },
       { key: "cubeAttack", name: "Cube Attack" },
@@ -15,6 +20,7 @@ class Animations
       { key: "movingTriangles", name: "Moving Triangles" },
       { key: "enhancedMovingTriangles", name: "Enhanced Moving Triangles" },
       { key: "minimalSphereMesh", name: "Minimal Sphere Mesh" },
+      { key: "explodingSphere", name: "Exploding Sphere" },
       { key: "implodingSphere", name: "Imploding Sphere" },
       { key: "splittingSphereBottom", name: "Splitting Sphere - Bottom" },
       { key: "sideSplittingSphereDown", name: "Side Splitting Sphere - Down" },
@@ -22,8 +28,8 @@ class Animations
       { key: "dancingSphere", name: "Dancing Sphere" },
       { key: "trippyDancingSphere", name: "Trippy Dancing Sphere" },
       { key: "trippyDancingSphereWithColors", name: "Trippy Dancing Sphere with colors" },
-      { key: "discoballOnStars", name: "Discoball on Stars" },
-      { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars" },
+      { key: "discoball", name: "Discoball" },
+      { key: "enhancedDiscoball", name: "Enhanced Discoball" },
       { key: "starrySkies", name: "Starry Skies" },
       { key: "uberTriangle", name: "Uber Triangle", preloadGif: true },
       { key: "rotatingAxes", name: "Rotating Axes", preloadGif: true}
@@ -46,7 +52,7 @@ class Animations
     @renderer = new THREE.WebGLRenderer()
     @renderer.setClearColor(0x333333)
     @renderer.setPixelRatio(window.devicePixelRatio)
-    @renderer.setSize($(target).width(), $(target).height())
+    @renderer.setSize($(@target).width(), $(@target).height())
 
     $(@target).append(@renderer.domElement)
     window.addEventListener('resize', @onWindowResize)
@@ -101,24 +107,33 @@ class Animations
     @render()
     @callbackTimeout = setTimeout callback, 5000
 
+  ### ONE SHOTS ###
+
   flashAnim: =>
-    @clearScene()
-    @camera.position.z = 30
-    cameraChange = 0.05
+    @camera.position.z = 50
 
     skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    @skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, @skyboxMaterial)
-    @scene.add(@skybox)
+    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })
+    skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
+    @scene.add(skybox)
 
-    @animateFn = =>
-      @skyboxMaterial.color.setHex(Math.random() * 0xffffff)
+    animateFn = =>
+      skyboxMaterial.color.setHex(Math.random() * 0xffffff)
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
 
     callback = =>
-      @scene.remove(@skybox)
+      @scene.remove(skybox)
+      cancelAnimationFrame(req)
+      skybox = null
+      @renderer.render(@scene, @camera)
 
-    @render()
-    @callbackTimeout = setTimeout callback, 400
+    render()
+    callbackTimeout = setTimeout callback, 400
 
   spinningDiamondAnim: =>
     @camera.position.z = 50
@@ -155,7 +170,7 @@ class Animations
     line1.rotation.y = 5
     line2.rotation.y = -5
 
-    @animateNeverFn = =>
+    animateFn = =>
       if (line1.rotation.y==0)
 
         line1.rotation.y += 0
@@ -167,12 +182,774 @@ class Animations
       else
         line2.rotation.y += (0-line2.rotation.y)/20
 
-    callback = =>
-      line1.visible = false
-      line2.visible = false
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
 
-    @neverRender()
-    @callbackTimeout = setTimeout callback, 1600
+    callback = =>
+      @scene.remove(line1)
+      @scene.remove(line2)
+      cancelAnimationFrame(req)
+      line1 = null
+      line2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1600
+
+  singleRandomBgColorAnim: =>
+    @camera.position.z = 50
+
+    bskyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    bskyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.BackSide })
+    bskyboxMaterial.color.setHex(Math.random() * 0xffffff)
+    bskybox = new THREE.Mesh(bskyboxGeometry, bskyboxMaterial)
+    @scene.add(bskybox)
+
+    callback = =>
+      @scene.remove(bskybox)
+      bskybox = null
+      @renderer.render(@scene, @camera)
+
+    @renderer.render(@scene, @camera)
+    callbackTimeout = setTimeout callback, 1600
+
+  backgroundColorShiftAnim: =>
+    @camera.position.z = 50
+
+    #ELEMENTS
+    skyboxGeometry2 = new THREE.CubeGeometry(100, 100, 1)
+    skyboxMaterial2 = new THREE.MeshBasicMaterial(
+      color: 0x000000
+      side: THREE.BackSide)
+    skybox2 = new THREE.Mesh(skyboxGeometry2, skyboxMaterial2)
+    @scene.add(skybox2)
+    skybox2.position.x = -100
+
+    randomColor = Math.random() * 0xffffff
+    chance = Math.random()
+    skyboxMaterial2.color.setHex randomColor
+
+    if chance < .25
+      skybox2.position.x = -100
+    else if chance < .5
+      skybox2.position.x = 100
+    else if chance < .75
+      skybox2.position.y = -100
+    else if chance < 1
+      skybox2.position.y = 100
+
+    animateFn= =>
+      skybox2.position.x += (0 - skybox2.position.x)/15;
+      skybox2.position.y += (0 - skybox2.position.y)/15;
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(skybox2)
+      cancelAnimationFrame(req)
+      skybox2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1600
+
+  rotatingCubeAnim: =>
+    @camera.position.z = 50
+
+    #CUBES
+    geometry = new THREE.BoxGeometry(15,15,15)
+    material = new THREE.MeshBasicMaterial({color: 0xff0000, opacity:0.5, transparent:true})
+    material.color.setHex(Math.random() * 0xffffff)
+    cube1 = new THREE.Mesh(geometry,material)
+    cube1.rotation.x = (Math.PI/3)
+    cube1.rotation.y = (Math.PI/3)
+    cube1.rotation.z = (Math.PI/3)
+    @scene.add(cube1)
+
+    animateFn = =>
+      cube1.rotation.x += .01
+      cube1.rotation.y += .02
+      cube1.rotation.z += .03
+
+    anim1 = =>
+      material.color.setHex(Math.random() * 0xffffff)
+
+    inter = setInterval anim1, (@bpm*4)
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      clearInterval(inter)
+      @scene.remove(cube1)
+      cancelAnimationFrame(req)
+      cube1 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2000
+
+  rotatingSphereMeshAnim: =>
+    @camera.position.z = 50
+
+    #SPHERES
+    sphereMaterial = new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true, wireframeLinewidth:9, transparent: true, opacity: 0.5})
+    sphereGeometry = new THREE.SphereGeometry( 15,8,8,0,6.3,3,2.5 )
+
+    sphereMaterial.color.setHex(Math.random() * 0xffffff)
+    sphere = new THREE.Mesh( sphereGeometry, sphereMaterial )
+    sphere.position.set(0,-15,0)
+    @scene.add(sphere)
+
+    sphere2 = new THREE.Mesh(sphereGeometry,sphereMaterial)
+    sphere2.position.set(0,15,0)
+    sphere2.rotation.z = Math.PI
+    @scene.add(sphere2);
+
+    animateFn = =>
+      sphere.rotation.y +=.04
+      sphere2.rotation.y += .04
+      sphere.position.z += (40 - sphere.position.z)/40
+      sphere2.position.z += (40 - sphere2.position.z)/40
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(sphere)
+      @scene.remove(sphere2)
+      cancelAnimationFrame(req)
+      sphere = null
+      sphere2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2000
+
+  movingTrianglesAnim: =>
+    @camera.position.z = 50
+
+    #ELEMENTS
+    #TRIANGLES
+    lineMaterial = new THREE.LineBasicMaterial({
+      color:0xff0000, linewidth: 50, transparent:true
+    })
+
+    triangleGeometry = new THREE.Geometry()
+
+    triangleGeometry.vertices.push(
+      new THREE.Vector3(-6,-5,0),
+      new THREE.Vector3(0,5,0),
+      new THREE.Vector3(6,-5,0),
+      new THREE.Vector3(-6,-5,0)
+    )
+
+    triangle = new THREE.Line(triangleGeometry,lineMaterial)
+    triangle.position.set(-20,-10,-500)
+    @scene.add(triangle)
+
+    triangle2 = new THREE.Line(triangleGeometry,lineMaterial)
+    triangle2.position.set(20,-10,-500)
+    @scene.add(triangle2)
+
+    triangle3 = new THREE.Line(triangleGeometry,lineMaterial)
+    triangle3.position.set(-20,10,-500)
+    @scene.add(triangle3)
+
+    triangle4 = new THREE.Line(triangleGeometry,lineMaterial)
+    triangle4.position.set(20,10,-500)
+    @scene.add(triangle4)
+
+    animateFn = =>
+      triangle.position.z += (50 - triangle.position.z)/30
+      triangle2.position.z += (50 - triangle2.position.z)/30
+      triangle3.position.z += (50 - triangle3.position.z)/30
+      triangle4.position.z += (50 - triangle4.position.z)/30
+
+      triangle.rotation.z -= .01
+      triangle2.rotation.z -= .01
+      triangle3.rotation.z += .01
+      triangle4.rotation.z += .01
+
+    anim1 = =>
+      triangle.rotation.z += Math.PI/2
+      triangle2.rotation.z += Math.PI/2
+      triangle3.rotation.z -= Math.PI/2
+      triangle4.rotation.z -= Math.PI/2
+      lineMaterial.color.setHex(Math.random() * 0xffffff)
+
+    inter = setInterval anim1, (@bpm)
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      clearInterval(inter)
+      @scene.remove(triangle)
+      @scene.remove(triangle2)
+      @scene.remove(triangle3)
+      @scene.remove(triangle4)
+      cancelAnimationFrame(req)
+      triangle1 = null
+      triangle2 = null
+      triangle3 = null
+      triangle4 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2000
+
+  minimalSphereMeshAnim: =>
+    @camera.position.z = 50
+
+    #ELEMENTS
+    geometryintro = new THREE.SphereGeometry(15,20,10)
+    materialintro = new THREE.MeshBasicMaterial({color:0xffffff, opacity:0, wireframe: true, wireframeLinewidth: 2, transparent: true})
+    meshintro = new THREE.Mesh(geometryintro, materialintro)
+    @scene.add(meshintro);
+    meshintro.position.set(0,0,0)
+    materialintro.opacity = 1
+    materialintro.color.setHex(Math.random() * 0xffffff)
+    meshintro.rotation.y = 0
+
+    animateFn = =>
+      meshintro.rotation.y += .01;
+      materialintro.opacity += (0 - materialintro.opacity)/30
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(meshintro)
+      cancelAnimationFrame(req)
+      meshintro = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2000
+
+  explodingSphereAnim: =>
+    @camera.position.z = 50
+
+    #SPHERES
+    geometry = new THREE.SphereGeometry(1, 80, 20)
+    geometry2 = new THREE.SphereGeometry(15, 80, 20)
+    material = new THREE.PointsMaterial(
+      size: 1
+      vertexColors: true
+      transparent: true
+      opacity: 1)
+
+    material2 = new THREE.MeshBasicMaterial(
+      transparent: true
+      opacity: 0)
+    colors = []
+    i = 0
+    while i < geometry.vertices.length
+      colors[i] = new (THREE.Color)
+      colors[i].setHSL 100, 100, 0
+      # colors[i].setHSL(Math.random(),1,0.5);
+      i++
+
+    geometry.colors = colors
+    geometry2.colors = colors
+    mesh = new THREE.Points(geometry, material2)
+    mesh.position.set 0, -20, 0
+    mesh2 = new THREE.Points(geometry2, material)
+    mesh2.sortParticles = true
+    @scene.add(mesh)
+    @scene.add(mesh2)
+
+    animateFn= =>
+      mesh.position.y += (25 - (mesh.position.y)) / 20
+      mesh2.rotation.y += .005
+
+      vertices = mesh2.geometry.vertices
+
+      if mesh.position.y >= 15
+        mesh2.rotation.x += Math.random() / 20 - .025
+        mesh2.rotation.y += Math.random() / 20 - .025
+        # mesh2.rotation.z += Math.random()/20-.025;
+        mesh2.scale.x += (2 - (mesh2.scale.x)) / 20
+        mesh2.scale.y += (2 - (mesh2.scale.y)) / 20
+        mesh2.scale.z += (2 - (mesh2.scale.z)) / 20
+        material.size += (.5 - (material.size)) / 20
+        material.opacity += (0 - (material.opacity)) / 20
+      i = 0
+      while i < geometry.vertices.length
+        if geometry2.vertices[i].y <= mesh.position.y
+          geometry2.vertices[i].x -= Math.random() / 2 - .25
+          geometry2.vertices[i].y -= Math.random() / 2 - .25
+          geometry2.vertices[i].z -= Math.random() / 2 - .25
+        # geometry2.vertices[i].y -= (Math.random()/5);
+        # if (geometry2.vertices[i].y <= 0) {geometry2.vertices[i].y = 0};
+        i++
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    req = 0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      @scene.remove(mesh2)
+      cancelAnimationFrame(req)
+      mesh = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1200
+
+  implodingSphereAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
+
+    colors = [];
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(100,100,0)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material)
+    mesh.position.set(0,0,0)
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2)
+    geometry2.colors = colors
+    vertices = mesh.geometry.vertices
+
+    mesh2 = new THREE.Points(geometry2,material)
+    mesh2.sortParticles = true
+    @scene.add(mesh2)
+
+    @scene.add(mesh)
+
+    animateFn = =>
+      mesh.rotation.y += .005;
+      mesh2.scale.x += (1 - mesh2.scale.x)/50;
+      mesh2.scale.y += (1 - mesh2.scale.y)/50;
+      mesh2.scale.z += (1 - mesh2.scale.z)/50;
+
+      vertices = mesh2.geometry.vertices;
+      max = geometry.vertices.length - 1
+      for i in [0..max]
+        geometry2.vertices[i].y -= (Math.random()/5)
+        if (geometry2.vertices[i].y <= 0)
+          geometry2.vertices[i].y = 0
+
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      @scene.remove(mesh2)
+      cancelAnimationFrame(req)
+      mesh = null
+      mesh2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2600
+
+  splittingSphereBottomAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2)
+
+    colors = [];
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(100,100,0)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material)
+    mesh.position.set(0,0,0)
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
+    geometry2.colors = colors
+    vertices = mesh.geometry.vertices
+
+    mesh2 = new THREE.Points(geometry2,material)
+    mesh2.sortParticles = true
+    @scene.add(mesh2)
+
+    @scene.add(mesh)
+
+    animateFn = =>
+      mesh.rotation.y += .005;
+      mesh2.scale.x += (1 - mesh2.scale.x)/50;
+      mesh2.scale.y += (1 - mesh2.scale.y)/50;
+      mesh2.scale.z += (1 - mesh2.scale.z)/50;
+
+      vertices = mesh2.geometry.vertices
+      max = geometry.vertices.length - 1
+      for i in [0..max]
+        geometry2.vertices[i].y -= (Math.random()/5)
+
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      @scene.remove(mesh2)
+      cancelAnimationFrame(req)
+      mesh = null
+      mesh2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2600
+
+  sideSplittingSphereDownAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,Math.PI,0,Math.PI)
+
+    colors = [];
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(100,100,0)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material)
+    mesh.position.set(0,0,0)
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,Math.PI,Math.PI,Math.PI)
+    geometry2.colors = colors
+    vertices = mesh.geometry.vertices
+
+    mesh2 = new THREE.Points(geometry2,material)
+    mesh2.sortParticles = true
+    @scene.add(mesh2)
+
+    @scene.add(mesh)
+
+    animateFn = =>
+      mesh.rotation.y += .01
+      mesh2.rotation.y += .01
+      mesh2.scale.x += (1 - mesh2.scale.x)/50
+      mesh2.scale.y += (1 - mesh2.scale.y)/50
+      mesh2.scale.z += (1 - mesh2.scale.z)/50
+
+      vertices = mesh2.geometry.vertices
+      max = geometry.vertices.length - 1
+      for i in [0..max]
+        geometry2.vertices[i].y -= (Math.random()/5)
+
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      @scene.remove(mesh2)
+      cancelAnimationFrame(req)
+      mesh = null
+      mesh2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2600
+
+  sideSplittingSphereUpAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,Math.PI,0,Math.PI)
+
+    colors = [];
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(100,100,0)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material)
+    mesh.position.set(0,0,0)
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,Math.PI,Math.PI,Math.PI)
+    geometry2.colors = colors
+    vertices = mesh.geometry.vertices
+
+    mesh2 = new THREE.Points(geometry2,material)
+    mesh2.sortParticles = true
+    @scene.add(mesh2)
+
+    @scene.add(mesh)
+
+    animateFn = =>
+      mesh.rotation.y -= .01
+      mesh2.rotation.y -= .01
+      mesh2.scale.x += (1 - mesh2.scale.x)/50
+      mesh2.scale.y += (1 - mesh2.scale.y)/50
+      mesh2.scale.z += (1 - mesh2.scale.z)/50
+
+      vertices = mesh2.geometry.vertices
+      max = geometry.vertices.length - 1
+      for i in [0..max]
+        geometry2.vertices[i].y += (Math.random()/5)
+
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      @scene.remove(mesh2)
+      cancelAnimationFrame(req)
+      mesh = null
+      mesh2 = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 2600
+
+  discoballAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
+
+    colors = []
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(Math.random(),1,0.5)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material);
+    mesh.position.set(0,0,0);
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2);
+    geometry2.colors = colors;
+    vertices = mesh.geometry.vertices;
+    topmesh = new THREE.Points(geometry2,material);
+    topmesh.sortParticles = true;
+
+    @scene.add(mesh)
+    @scene.add(topmesh)
+
+    topmesh.scale.x = 1.1;
+    topmesh.scale.y = 1.1;
+    topmesh.scale.z = 1.1;
+    mesh.scale.x = 1.1;
+    mesh.scale.y = 1.1;
+    mesh.scale.z = 1.1;
+
+    animateFn = =>
+      mesh.rotation.y -= .005;
+      topmesh.rotation.y += .005;
+      topmesh.scale.x += (1 - topmesh.scale.x)/50;
+      topmesh.scale.y += (1 - topmesh.scale.y)/50;
+      topmesh.scale.z += (1 - topmesh.scale.z)/50;
+      mesh.scale.x += (1 - mesh.scale.x)/50;
+      mesh.scale.y += (1 - mesh.scale.y)/50;
+      mesh.scale.z += (1 - mesh.scale.z)/50;
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(topmesh)
+      @scene.remove(mesh)
+      cancelAnimationFrame(req)
+      topmesh = null
+      mesh = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 800
+
+  enhancedDiscoballAnim: =>
+    @camera.position.z = 50
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
+
+    colors = []
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(Math.random(),1,0.5)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    mesh = new THREE.Points(geometry, material);
+    mesh.position.set(0,0,0);
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2);
+    geometry2.colors = colors;
+    vertices = mesh.geometry.vertices;
+    topmesh = new THREE.Points(geometry2,material);
+    topmesh.sortParticles = true;
+
+    @scene.add(mesh);
+    @scene.add(topmesh);
+
+    geometry3 = new THREE.SphereGeometry(10,20,10);
+    whitematerial = new THREE.MeshBasicMaterial({color:0xffffff, opacity:1, wireframe: true, wireframeLinewidth: 2, transparent: true});
+    wiremesh = new THREE.Mesh(geometry3, whitematerial);
+    @scene.add(wiremesh);
+
+    topmesh.scale.x = 1.1;
+    topmesh.scale.y = 1.1;
+    topmesh.scale.z = 1.1;
+    mesh.scale.x = 1.1;
+    mesh.scale.y = 1.1;
+    mesh.scale.z = 1.1;
+    wiremesh.scale.x = .1;
+    wiremesh.scale.y = .1;
+    wiremesh.scale.z = .1;
+
+    animateFn = =>
+      mesh.rotation.y -= .005;
+      topmesh.rotation.y += .005;
+      topmesh.scale.x += (1 - topmesh.scale.x)/50;
+      topmesh.scale.y += (1 - topmesh.scale.y)/50;
+      topmesh.scale.z += (1 - topmesh.scale.z)/50;
+      mesh.scale.x += (1 - mesh.scale.x)/50;
+      mesh.scale.y += (1 - mesh.scale.y)/50;
+      mesh.scale.z += (1 - mesh.scale.z)/50;
+      wiremesh.scale.x += (1 - wiremesh.scale.x)/50;
+      wiremesh.scale.y += (1 - wiremesh.scale.y)/50;
+      wiremesh.scale.z += (1 - wiremesh.scale.z)/50;
+
+    req =0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(topmesh)
+      @scene.remove(mesh)
+      @scene.remove(wiremesh)
+      cancelAnimationFrame(req)
+      topmesh = null
+      mesh = null
+      wiremesh = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 800
+
+  spinningCircleZoomAnim: =>
+    @camera.position.z = 50
+
+    #ELEMENTS
+    geometry = new THREE.RingGeometry(10, 20, 30, 20, 0, 4)
+    material = new THREE.MeshBasicMaterial(
+      color: 0x00000
+      side: THREE.DoubleSide)
+
+    mesh = new THREE.Mesh(geometry, material)
+    @scene.add(mesh)
+    mesh.position.z = -1000
+
+    animateFn= =>
+      mesh.position.z += (50 - (mesh.position.z)) / 10
+      mesh.rotation.z += .7
+
+    req = 0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(mesh)
+      cancelAnimationFrame(req)
+      mesh = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1200
+
+  ### SCENES ###
+
+  flashToBlackAnim: =>
+    @clearScene()
+    @camera.position.z = 50
+
+    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })
+    skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
+    @scene.add(skybox)
+
+    @animateFn = =>
+      skyboxMaterial.color.setHex(Math.random() * 0xffffff)
+
+    callback = =>
+      @scene.remove(skybox)
+      skybox = null
+      @renderer.render(@scene, @camera)
+
+    @render()
+    @callbackTimeout = setTimeout callback, 400
 
   randomBgColorsAnim: =>
     @clearScene()
@@ -193,44 +970,6 @@ class Animations
       @scene.remove(@bskybox)
 
     @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  rotatingCubeAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #ELEMENTS
-    #SKYBOX
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    #CUBES
-    geometry = new THREE.BoxGeometry(15,15,15)
-    material = new THREE.MeshBasicMaterial({color: 0xff0000, opacity:0.5, transparent:true})
-    @cube1 = new THREE.Mesh(geometry,material)
-    @cube1.rotation.x = (Math.PI/3)
-    @cube1.rotation.y = (Math.PI/3)
-    @cube1.rotation.z = (Math.PI/3)
-    @scene.add(@cube1)
-
-    @animateFn = =>
-      @cube1.rotation.x += .01
-      @cube1.rotation.y += .02
-      @cube1.rotation.z += .03
-
-    anim1 = =>
-      material.color.setHex(Math.random() * 0xffffff)
-
-    @inter = setInterval anim1, (@bpm*4)
-
-    callback = =>
-      @scene.remove(@cube1)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
 
   enhancedRotatingCubeAnim: =>
     @clearScene()
@@ -377,53 +1116,6 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  rotatingSphereMeshAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #ELEMENTS
-    #SKYBOX
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    #SPHERES
-    sphereMaterial = new THREE.MeshBasicMaterial({color:0xff0000, wireframe: true, wireframeLinewidth:9, transparent: true, opacity: 0.5})
-    sphereGeometry = new THREE.SphereGeometry( 15,8,8,0,6.3,3,2.5 )
-
-    @sphere = new THREE.Mesh( sphereGeometry, sphereMaterial )
-    @sphere.position.set(0,-15,0)
-    @scene.add( @sphere )
-
-    @sphere2 = new THREE.Mesh(sphereGeometry,sphereMaterial)
-    @sphere2.position.set(0,15,0)
-    @sphere2.rotation.z = Math.PI
-    @scene.add(@sphere2);
-
-    @animateFn = =>
-
-      @sphere.rotation.y +=.04
-      @sphere2.rotation.y += .04
-      @sphere.position.z += (40 - @sphere.position.z)/40
-      @sphere2.position.z += (40 - @sphere2.position.z)/40
-
-    anim1 = =>
-      @sphere.position.z = 0;
-      @sphere2.position.z = 0
-
-    @inter = setInterval anim1, (@bpm*4)
-
-    # @animateSquaresFn
-
-    callback = =>
-      @scene.remove(@sphere)
-      @scene.remove(@sphere2)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
   enhancedRotatingSphereMeshAnim: =>
     @clearScene()
     @camera.position.z = 50
@@ -474,86 +1166,6 @@ class Animations
     callback = =>
       @scene.remove(@sphere)
       @scene.remove(@sphere2)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  movingTrianglesAnim: =>
-    @clearScene()
-    @camera.position.z = -20
-
-    #ELEMENTS
-    #SKYBOX
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    #TRIANGLES
-    lineMaterial = new THREE.LineBasicMaterial({
-      color:0xff0000, linewidth: 50, transparent:true
-    })
-
-    triangleGeometry = new THREE.Geometry()
-
-    triangleGeometry.vertices.push(
-      new THREE.Vector3(-6,-5,0),
-      new THREE.Vector3(0,5,0),
-      new THREE.Vector3(6,-5,0),
-      new THREE.Vector3(-6,-5,0)
-    )
-
-    @triangle = new THREE.Line(triangleGeometry,lineMaterial)
-    @triangle.position.set(-20,-10,-1000)
-    @scene.add(@triangle)
-
-    @triangle2 = new THREE.Line(triangleGeometry,lineMaterial)
-    @triangle2.position.set(20,-10,-1000)
-    @scene.add(@triangle2)
-
-    @triangle3 = new THREE.Line(triangleGeometry,lineMaterial)
-    @triangle3.position.set(-20,10,-1000)
-    @scene.add(@triangle3)
-
-    @triangle4 = new THREE.Line(triangleGeometry,lineMaterial)
-    @triangle4.position.set(20,10,-1000)
-    @scene.add(@triangle4)
-
-    @animateFn = =>
-      @triangle.position.z += (0 - @triangle.position.z)/30
-      @triangle2.position.z += (0 - @triangle2.position.z)/30
-      @triangle3.position.z += (0 - @triangle3.position.z)/30
-      @triangle4.position.z += (0 - @triangle4.position.z)/30
-
-      @triangle.rotation.z -= .01
-      @triangle2.rotation.z -= .01
-      @triangle3.rotation.z += .01
-      @triangle4.rotation.z += .01
-
-    anim1 = =>
-      @triangle.rotation.z += Math.PI/2
-      @triangle2.rotation.z += Math.PI/2
-      @triangle3.rotation.z -= Math.PI/2
-      @triangle4.rotation.z -= Math.PI/2
-      lineMaterial.color.setHex(Math.random() * 0xffffff)
-
-    anim2 = =>
-      @triangle.position.z = -1000
-      @triangle2.position.z = -1000
-      @triangle3.position.z = -1000
-      @triangle4.position.z = -1000
-
-    @inter = setInterval anim1, (@bpm)
-    @inter2 = setInterval anim2, (@bpm*4)
-
-    # @animateSquaresFn
-
-    callback = =>
-      @scene.remove(@triangle)
-      @scene.remove(@triangle2)
-      @scene.remove(@triangle3)
-      @scene.remove(@triangle4)
       @scene.remove(@skybox)
 
     @render()
@@ -640,265 +1252,6 @@ class Animations
       @scene.remove(@triangle2)
       @scene.remove(@triangle3)
       @scene.remove(@triangle4)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  minimalSphereMeshAnim: =>
-    clearTimeout(@callbackTimeout) if @callbackTimeout
-    @callbackTimeout = null
-    @scene.remove(@meshintro)
-    cancelAnimationFrame(@sphereReq)
-    @camera.position.z = 50
-
-    #ELEMENTS
-    @geometryintro = new THREE.SphereGeometry(15,20,10)
-    @materialintro = new THREE.MeshBasicMaterial({color:0xffffff, opacity:0, wireframe: true, wireframeLinewidth: 2, transparent: true})
-    @meshintro = new THREE.Mesh(@geometryintro, @materialintro)
-    @scene.add(@meshintro);
-    @meshintro.position.set(0,0,0)
-    @materialintro.opacity = 1
-    @materialintro.color.setHex(Math.random() * 0xffffff)
-    @meshintro.rotation.y = 0
-
-    @animateSphereFn = =>
-      @meshintro.rotation.y += .01;
-      @materialintro.opacity += (0 - @materialintro.opacity)/30
-
-    callback = =>
-      @scene.remove(@meshintro)
-
-    @sphereRender()
-    @callbackTimeout = setTimeout callback, 2000
-
-  implodingSphereAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    @geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-
-    colors = [];
-    max = @geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(100,100,0)
-
-    @geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(@geometry, material)
-    @mesh.position.set(0,0,0)
-
-    @geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2)
-    @geometry2.colors = colors
-    vertices = @mesh.geometry.vertices
-
-    @mesh2 = new THREE.Points(@geometry2,material)
-    @mesh2.sortParticles = true
-    @scene.add(@mesh2)
-
-    @scene.add(@mesh)
-
-    @animateFn = =>
-      @mesh.rotation.y += .005;
-      @mesh2.scale.x += (1 - @mesh2.scale.x)/50;
-      @mesh2.scale.y += (1 - @mesh2.scale.y)/50;
-      @mesh2.scale.z += (1 - @mesh2.scale.z)/50;
-
-      vertices = @mesh2.geometry.vertices;
-      max = @geometry.vertices.length - 1
-      for i in [0..max]
-        @geometry2.vertices[i].y -= (Math.random()/5)
-        if (@geometry2.vertices[i].y <= 0)
-          @geometry2.vertices[i].y = 0
-
-      @geometry2.verticesNeedUpdate = true
-      @geometry2.dynamic = true
-
-    callback = =>
-      @scene.remove(@mesh)
-      @scene.remove(@mesh2)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  splittingSphereBottomAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    @geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2)
-
-    colors = [];
-    max = @geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(100,100,0)
-
-    @geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(@geometry, material)
-    @mesh.position.set(0,0,0)
-
-    @geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-    @geometry2.colors = colors
-    vertices = @mesh.geometry.vertices
-
-    @mesh2 = new THREE.Points(@geometry2,material)
-    @mesh2.sortParticles = true
-    @scene.add(@mesh2)
-
-    @scene.add(@mesh)
-
-    @animateFn = =>
-      @mesh.rotation.y += .005;
-      @mesh2.scale.x += (1 - @mesh2.scale.x)/50;
-      @mesh2.scale.y += (1 - @mesh2.scale.y)/50;
-      @mesh2.scale.z += (1 - @mesh2.scale.z)/50;
-
-      vertices = @mesh2.geometry.vertices
-      max = @geometry.vertices.length - 1
-      for i in [0..max]
-        @geometry2.vertices[i].y -= (Math.random()/5)
-
-      @geometry2.verticesNeedUpdate = true
-      @geometry2.dynamic = true
-
-    callback = =>
-      @scene.remove(@mesh)
-      @scene.remove(@mesh2)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  sideSplittingSphereDownAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    @geometry = new THREE.SphereGeometry(15,80,20,0,Math.PI,0,Math.PI)
-
-    colors = [];
-    max = @geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(100,100,0)
-
-    @geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(@geometry, material)
-    @mesh.position.set(0,0,0)
-
-    @geometry2 = new THREE.SphereGeometry(15,80,20,0,Math.PI,Math.PI,Math.PI)
-    @geometry2.colors = colors
-    vertices = @mesh.geometry.vertices
-
-    @mesh2 = new THREE.Points(@geometry2,material)
-    @mesh2.sortParticles = true
-    @scene.add(@mesh2)
-
-    @scene.add(@mesh)
-
-    @animateFn = =>
-      @mesh.rotation.y += .01
-      @mesh2.rotation.y += .01
-      @mesh2.scale.x += (1 - @mesh2.scale.x)/50
-      @mesh2.scale.y += (1 - @mesh2.scale.y)/50
-      @mesh2.scale.z += (1 - @mesh2.scale.z)/50
-
-      vertices = @mesh2.geometry.vertices
-      max = @geometry.vertices.length - 1
-      for i in [0..max]
-        @geometry2.vertices[i].y -= (Math.random()/5)
-
-      @geometry2.verticesNeedUpdate = true
-      @geometry2.dynamic = true
-
-    callback = =>
-      @scene.remove(@mesh)
-      @scene.remove(@mesh2)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  sideSplittingSphereUpAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    @geometry = new THREE.SphereGeometry(15,80,20,0,Math.PI,0,Math.PI)
-
-    colors = [];
-    max = @geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(100,100,0)
-
-    @geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(@geometry, material)
-    @mesh.position.set(0,0,0)
-
-    @geometry2 = new THREE.SphereGeometry(15,80,20,0,Math.PI,Math.PI,Math.PI)
-    @geometry2.colors = colors
-    vertices = @mesh.geometry.vertices
-
-    @mesh2 = new THREE.Points(@geometry2,material)
-    @mesh2.sortParticles = true
-    @scene.add(@mesh2)
-
-    @scene.add(@mesh)
-
-    @animateFn = =>
-      @mesh.rotation.y -= .01
-      @mesh2.rotation.y -= .01
-      @mesh2.scale.x += (1 - @mesh2.scale.x)/50
-      @mesh2.scale.y += (1 - @mesh2.scale.y)/50
-      @mesh2.scale.z += (1 - @mesh2.scale.z)/50
-
-      vertices = @mesh2.geometry.vertices
-      max = @geometry.vertices.length - 1
-      for i in [0..max]
-        @geometry2.vertices[i].y += (Math.random()/5)
-
-      @geometry2.verticesNeedUpdate = true
-      @geometry2.dynamic = true
-
-    callback = =>
-      @scene.remove(@mesh)
-      @scene.remove(@mesh2)
       @scene.remove(@skybox)
 
     @render()
@@ -1118,187 +1471,6 @@ class Animations
     @render()
     # @callbackTimeout = setTimeout callback, 400
 
-  discoballOnStarsAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-
-    colors = []
-    max = geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(Math.random(),1,0.5)
-
-    geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(geometry, material);
-    @mesh.position.set(0,0,0);
-
-    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2);
-    geometry2.colors = colors;
-    vertices = @mesh.geometry.vertices;
-    @topmesh = new THREE.Points(geometry2,material);
-    @topmesh.sortParticles = true;
-
-    whitematerial = new THREE.PointsMaterial({size:1, color: 0xffffff, transparent: true, opacity:1});
-    @starmesh = new THREE.Points(geometry,whitematerial);
-
-    @scene.add(@mesh);
-    @scene.add(@topmesh);
-    @scene.add(@starmesh);
-
-    @starmesh.scale.x = 10;
-    @starmesh.scale.y = 10;
-    @starmesh.scale.z = 10;
-
-    @topmesh.scale.x = 1.1;
-    @topmesh.scale.y = 1.1;
-    @topmesh.scale.z = 1.1;
-    @mesh.scale.x = 1.1;
-    @mesh.scale.y = 1.1;
-    @mesh.scale.z = 1.1;
-
-    @animateFn = =>
-      @mesh.rotation.y -= .005;
-      @topmesh.rotation.y += .005;
-      @topmesh.scale.x += (1 - @topmesh.scale.x)/50;
-      @topmesh.scale.y += (1 - @topmesh.scale.y)/50;
-      @topmesh.scale.z += (1 - @topmesh.scale.z)/50;
-      @mesh.scale.x += (1 - @mesh.scale.x)/50;
-      @mesh.scale.y += (1 - @mesh.scale.y)/50;
-      @mesh.scale.z += (1 - @mesh.scale.z)/50;
-
-      @starmesh.rotation.x += .001;
-      @starmesh.rotation.y += .002;
-      @starmesh.rotation.z += .005;
-
-    anim1 = =>
-      @topmesh.scale.x = 1.1;
-      @topmesh.scale.y = 1.1;
-      @topmesh.scale.z = 1.1;
-      @mesh.scale.x = 1.1;
-      @mesh.scale.y = 1.1;
-      @mesh.scale.z = 1.1;
-
-    @inter = setInterval anim1, (@bpm)
-
-    callback = =>
-      @scene.remove(@starmesh)
-      @scene.remove(@topmesh)
-      @scene.remove(@mesh)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
-  enhancedDiscoballOnStarsAnim: =>
-    @clearScene()
-    @camera.position.z = 50
-
-    #skybox
-    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
-    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
-    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
-    @scene.add(@skybox)
-
-    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
-
-    colors = []
-    max = geometry.vertices.length - 1
-    for i in [0..max]
-      colors[i] = new THREE.Color()
-      colors[i].setHSL(Math.random(),1,0.5)
-
-    geometry.colors = colors
-
-    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
-
-    @mesh = new THREE.Points(geometry, material);
-    @mesh.position.set(0,0,0);
-
-    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2);
-    geometry2.colors = colors;
-    vertices = @mesh.geometry.vertices;
-    @topmesh = new THREE.Points(geometry2,material);
-    @topmesh.sortParticles = true;
-
-    @scene.add(@mesh);
-    @scene.add(@topmesh);
-
-    geometry3 = new THREE.SphereGeometry(10,20,10);
-    whitematerial = new THREE.MeshBasicMaterial({color:0xffffff, opacity:1, wireframe: true, wireframeLinewidth: 2, transparent: true});
-    @wiremesh = new THREE.Mesh(geometry3, whitematerial);
-    @scene.add(@wiremesh);
-    @wiremesh.scale.x = 0.1;
-    @wiremesh.scale.y = 0.1;
-    @wiremesh.scale.z = 0.1;
-
-    material3 = new THREE.PointsMaterial({size:1, color: 0xffffff, transparent: true, opacity:1});
-    @starmesh = new THREE.Points(geometry,material3);
-    @scene.add(@starmesh);
-    @starmesh.scale.x = 10;
-    @starmesh.scale.y = 10;
-    @starmesh.scale.z = 10;
-
-    @topmesh.scale.x = 1.1;
-    @topmesh.scale.y = 1.1;
-    @topmesh.scale.z = 1.1;
-    @mesh.scale.x = 1.1;
-    @mesh.scale.y = 1.1;
-    @mesh.scale.z = 1.1;
-    @wiremesh.scale.x = .1;
-    @wiremesh.scale.y = .1;
-    @wiremesh.scale.z = .1;
-
-    @animateFn = =>
-      @mesh.rotation.y -= .005;
-      @topmesh.rotation.y += .005;
-      @topmesh.scale.x += (1 - @topmesh.scale.x)/50;
-      @topmesh.scale.y += (1 - @topmesh.scale.y)/50;
-      @topmesh.scale.z += (1 - @topmesh.scale.z)/50;
-      @mesh.scale.x += (1 - @mesh.scale.x)/50;
-      @mesh.scale.y += (1 - @mesh.scale.y)/50;
-      @mesh.scale.z += (1 - @mesh.scale.z)/50;
-      @wiremesh.scale.x += (1 - @wiremesh.scale.x)/50;
-      @wiremesh.scale.y += (1 - @wiremesh.scale.y)/50;
-      @wiremesh.scale.z += (1 - @wiremesh.scale.z)/50;
-
-      @starmesh.rotation.x += .001;
-      @starmesh.rotation.y += .002;
-      @starmesh.rotation.z += .005;
-
-    anim1 = =>
-      @topmesh.scale.x = 1.1;
-      @topmesh.scale.y = 1.1;
-      @topmesh.scale.z = 1.1;
-      @mesh.scale.x = 1.1;
-      @mesh.scale.y = 1.1;
-      @mesh.scale.z = 1.1;
-      @wiremesh.scale.x = .1;
-      @wiremesh.scale.y = .1;
-      @wiremesh.scale.z = .1;
-
-    @inter = setInterval anim1, (@bpm)
-
-    callback = =>
-      @scene.remove(@starmesh)
-      @scene.remove(@topmesh)
-      @scene.remove(@mesh)
-      @scene.remove(@wiremesh)
-      @scene.remove(@skybox)
-
-    @render()
-    # @callbackTimeout = setTimeout callback, 400
-
   starrySkiesAnim: =>
     @clearScene()
     @camera.position.z = 50
@@ -1351,18 +1523,6 @@ class Animations
   ###
   RENDER AND CLEAR METHODS
   ###
-  sphereRender: =>
-    @sphereReq = requestAnimationFrame(@sphereRender)
-
-    @animateSphereFn()
-    @renderer.render(@scene, @camera)
-
-  neverRender: =>
-    @neverReq = requestAnimationFrame(@neverRender)
-
-    @animateNeverFn()
-    @renderer.render(@scene, @camera)
-
   render: =>
     if @stopping
       @renderer.render(@scene, @camera)
@@ -1382,10 +1542,7 @@ class Animations
   clearScene: =>
     @stopping = true
     @showCanvas()
-
     cancelAnimationFrame(@request)
-    cancelAnimationFrame(@neverReq)
-    cancelAnimationFrame(@sphereReq)
     clearTimeout(@callbackTimeout) if @callbackTimeout
     @callbackTimeout = null
     clearInterval(@inter)
@@ -1393,6 +1550,5 @@ class Animations
     clearInterval(@inter3)
     @scene = new THREE.Scene()
     @stopping = false
-
 
 module.exports = Animations

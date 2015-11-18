@@ -13,12 +13,12 @@ module.exports = BaseView.extend
   initialize: ->
     self = @
   render: ->
-    _.bindAll(@, 'handleKeyboardTrigger')
-    $(document).on('keydown', @handleKeyboardTrigger)
     @$el.html @template()
     @hideNavbar()
     Keycode.setDict()
     @animations = new Animations("#playground-visuals")
+    # _.bindAll(@, 'handleKeyboardTrigger')
+    # $(document).on('keydown', @handleKeyboardTrigger)
     return @
   events: ->
     "mousemove" : "fadeInNavbar"
