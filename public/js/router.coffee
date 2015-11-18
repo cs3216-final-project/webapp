@@ -54,27 +54,32 @@ module.exports =  Backbone.Router.extend
   after: ->
 
   index: ->
+    global.SvnthApp.views.playground.close()
     global.SvnthApp.views.configPage.initSubViews()
     global.SvnthApp.views.configPage.render()
     global.SvnthApp.views.navbar.render()
 
   signup: ->
+    global.SvnthApp.views.playground.close()
     if AuthHelper.isLoggedIn()
       @navigate("/app", { trigger : true })
     global.SvnthApp.views.signup.setElement('#main-wrapper')
     global.SvnthApp.views.signup.render()
 
   login: ->
+    global.SvnthApp.views.playground.close()
     if AuthHelper.isLoggedIn()
       @navigate("/app", { trigger : true })
     global.SvnthApp.views.login.setElement('#main-wrapper')
     global.SvnthApp.views.login.render()
 
   logout: ->
+    global.SvnthApp.views.playground.close()
     AuthHelper.logout()
     @navigate("/", { trigger: true })
 
   live: (key) ->
+    global.SvnthApp.views.playground.close()
     global.SvnthApp.views.navbar.hideNavbar()
     global.SvnthApp.views.live.setKey(key)
     global.SvnthApp.views.live.render()

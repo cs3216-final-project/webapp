@@ -12,18 +12,20 @@ module.exports = BaseView.extend
   template: playgroundTemplate
   initialize: ->
     self = @
+  close: ->
+    $(document).unbind('keydown', @handleKeyboardTrigger)
+    BaseView.prototype.close.call @
   render: ->
     @$el.html @template()
     @hideNavbar()
     Keycode.setDict()
     @animations = new Animations("#playground-visuals")
-    # _.bindAll(@, 'handleKeyboardTrigger')
-    # $(document).on('keydown', @handleKeyboardTrigger)
+    _.bindAll(@, 'handleKeyboardTrigger')
+    $(document).bind('keydown', @handleKeyboardTrigger)
     return @
   events: ->
     "mousemove" : "fadeInNavbar"
     "mouseleave": "clearTimerForNavbar"
-
   hideNavbar: () ->
     $(".navbar").hide()
 
