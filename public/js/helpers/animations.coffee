@@ -5,6 +5,9 @@ class Animations
   @getAll: ->
     [
       { key: "blank", name: "Blank" },
+      { key: "random", name: "Randomize"},
+      { key: "logo", name: "Synthery"},
+      { key: "madeWithJS", name: "Made with JS"},
       { key: "spinningDiamond", name: "Spinning Diamond" },
       { key: "flash", name: "Flashing Colors" },
       { key: "flashToBlack", name: "Flashing Colors To Black" },
@@ -21,7 +24,8 @@ class Animations
       { key: "enhancedMovingTriangles", name: "Enhanced Moving Triangles" },
       { key: "minimalSphereMesh", name: "Minimal Sphere Mesh" },
       { key: "explodingSphere", name: "Exploding Sphere" },
-      { key: "implodingSphere", name: "Imploding Sphere" },
+      { key: "confetti", name: "Confetti"},
+      { key: "splittingSphereTop", name: "Splitting Sphere - Top" },
       { key: "splittingSphereBottom", name: "Splitting Sphere - Bottom" },
       { key: "sideSplittingSphereDown", name: "Side Splitting Sphere - Down" },
       { key: "sideSplittingSphereUp", name: "Side Splitting Sphere - Up" },
@@ -30,7 +34,10 @@ class Animations
       { key: "trippyDancingSphereWithColors", name: "Trippy Dancing Sphere with colors" },
       { key: "discoball", name: "Discoball" },
       { key: "enhancedDiscoball", name: "Enhanced Discoball" },
+      { key: "enhancedDiscoballOnStars", name: "Enhanced Discoball on Stars"},
       { key: "starrySkies", name: "Starry Skies" },
+      { key: "radioactive", name: "Radioactive"},
+      { key: "linesphere", name: "Orange Sphere"},
       { key: "uberTriangle", name: "Uber Triangle", preloadGif: true },
       { key: "rotatingAxes", name: "Rotating Axes", preloadGif: true}
     ]
@@ -96,6 +103,10 @@ class Animations
       @showCanvas()
 
   blankAnim: =>
+
+  randomAnim: =>
+    anim = _.sample(Animations.getAll()).key
+    @[anim+"Anim"]()
 
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
@@ -522,7 +533,7 @@ class Animations
     render()
     callbackTimeout = setTimeout callback, 1200
 
-  implodingSphereAnim: =>
+  splittingSphereTopAnim: =>
     @camera.position.z = 50
 
     geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
@@ -929,7 +940,107 @@ class Animations
     render()
     callbackTimeout = setTimeout callback, 1200
 
-  ### SCENES ###
+  logoAnim: =>
+    @camera.position.z = 50
+
+    theText = 'Synthery'
+    text3d = new THREE.TextGeometry(theText,
+      size: 5
+      height: 5
+      curveSegments: 0
+      font: 'abel')
+    text3d.computeBoundingBox()
+    centerOffset = -0.5 * (text3d.boundingBox.max.x - (text3d.boundingBox.min.x))
+
+    material = new THREE.MeshFaceMaterial([
+      new THREE.MeshBasicMaterial(
+        color: Math.random() * 0xffffff
+        overdraw: 0.5),
+      new THREE.MeshBasicMaterial(
+        color: 0x000000
+        overdraw: 0.5)
+    ])
+    text = new THREE.Mesh(text3d, material)
+    text.position.x = centerOffset
+    text.position.y = 0
+    text.position.z = 0
+    text.rotation.x = 0
+    text.rotation.y = Math.PI * 2
+    group = new (THREE.Group)
+    group.add(text)
+    @scene.add(group)
+
+    animateFn = =>
+      group.scale.x += (2-(group.scale.x))/20
+      group.scale.y += (2-(group.scale.y))/20
+
+    req = 0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(group)
+      cancelAnimationFrame(req)
+      group = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1200
+
+  madeWithJSAnim: =>
+    @camera.position.z = 50
+
+    theText = 'Made with JS'
+    text3d = new THREE.TextGeometry(theText,
+      size: 7
+      height: 7
+      curveSegments: 0
+      font: 'abel')
+    text3d.computeBoundingBox()
+    centerOffset = -0.5 * (text3d.boundingBox.max.x - (text3d.boundingBox.min.x))
+
+    material = new THREE.MeshFaceMaterial([
+      new THREE.MeshBasicMaterial(
+        color: 0xffffff
+        overdraw: 0.5),
+      new THREE.MeshBasicMaterial(
+        color: 0x000000
+        overdraw: 0.5)
+    ])
+    text = new THREE.Mesh(text3d, material)
+    text.position.x = centerOffset
+    text.position.y = 0
+    text.position.z = 0
+    text.rotation.x = 0
+    text.rotation.y = Math.PI * 2
+    group = new (THREE.Group)
+    group.add(text)
+    @scene.add(group)
+    console.log(group.scale.x)
+    console.log(group.scale.y)
+
+    animateFn = =>
+      group.rotation.x += Math.random() / 20 - .025
+      group.rotation.y += Math.random() / 20 - .025
+
+    req = 0
+    render = =>
+      req = requestAnimationFrame(render)
+      animateFn()
+      @renderer.render(@scene, @camera)
+
+    callback = =>
+      @scene.remove(group)
+      cancelAnimationFrame(req)
+      group = null
+      @renderer.render(@scene, @camera)
+
+    render()
+    callbackTimeout = setTimeout callback, 1200
+
+  ###SCENES ###
 
   flashToBlackAnim: =>
     @clearScene()
@@ -1503,7 +1614,6 @@ class Animations
 
     geometry.colors = colors;
 
-
     @animateFn = =>
       @mesh.rotation.x += .001;
       @mesh.rotation.y += .002;
@@ -1519,6 +1629,306 @@ class Animations
 
     @render()
     # @callbackTimeout = setTimeout callback, 400
+
+  confettiAnim: =>
+    @clearScene()
+    @camera.position.z = 50
+
+    #skybox
+    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
+    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
+    @scene.add(@skybox)
+
+    #SPHERES
+    geometry = new THREE.SphereGeometry(1, 80, 20)
+    geometry2 = new THREE.SphereGeometry(15, 80, 20)
+    material = new THREE.PointsMaterial(
+      size: 1
+      vertexColors: true
+      transparent: true
+      opacity: 1)
+
+    material2 = new THREE.MeshBasicMaterial(
+      transparent: true
+      opacity: 0)
+    colors = []
+    i = 0
+    while i < geometry.vertices.length
+      colors[i] = new (THREE.Color)
+      # colors[i].setHSL 100, 100, 0
+      colors[i].setHSL(Math.random(),1,0.5);
+      i++
+
+    geometry.colors = colors
+    geometry2.colors = colors
+    mesh = new THREE.Points(geometry, material2)
+    mesh.position.set 0, -20, 0
+    mesh2 = new THREE.Points(geometry2, material)
+    mesh2.sortParticles = true
+    @scene.add(mesh)
+    @scene.add(mesh2)
+
+    skyboxMaterial.color.setHex(Math.random() * 0xffffff)
+
+    @animateFn= =>
+      # mesh.position.y += (25 - (mesh.position.y)) / 20
+      mesh2.rotation.y += .005
+
+      vertices = mesh2.geometry.vertices
+
+      # if mesh.position.y >= 15
+      mesh2.rotation.x += Math.random() / 20 - .025
+      mesh2.rotation.y += Math.random() / 20 - .025
+      mesh2.rotation.z += Math.random() /20-.025;
+
+      mesh2.scale.x += (2 - (mesh2.scale.x)) / 20
+      mesh2.scale.y += (2 - (mesh2.scale.y)) / 20
+      mesh2.scale.z += (2 - (mesh2.scale.z)) / 20
+      material.size += (.5 - (material.size)) / 20
+      # material.opacity += (0 - (material.opacity)) / 20
+
+      i = 0
+      while i < geometry.vertices.length
+        geometry2.vertices[i].x -= Math.random() / 2 - .25
+        geometry2.vertices[i].y -= Math.random() / 2 - .25
+        geometry2.vertices[i].z -= Math.random() / 2 - .25
+        i++
+      geometry2.verticesNeedUpdate = true
+      geometry2.dynamic = true
+
+    anim1 = =>
+      mesh2.scale.x = 0.5
+      mesh2.scale.y = 0.5
+      mesh2.scale.z = 0.5
+      material.size = 1
+
+    anim2 = =>
+      skyboxMaterial.color.setHex(Math.random() * 0xffffff)
+
+    @inter = setInterval anim1, (@bpm)
+    @inter2 = setInterval anim2, (@bpm*4)
+
+    @render()
+
+  enhancedDiscoballOnStarsAnim: =>
+    @clearScene()
+    @camera.position.z = 50
+
+    #skybox
+    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
+    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
+    @scene.add(@skybox)
+
+    geometry = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,Math.PI,Math.PI/2)
+
+    colors = []
+    max = geometry.vertices.length - 1
+    for i in [0..max]
+      colors[i] = new THREE.Color()
+      colors[i].setHSL(Math.random(),1,0.5)
+
+    geometry.colors = colors
+
+    material = new THREE.PointsMaterial({size:1, vertexColors: true, transparent: true, opacity:1})
+
+    @mesh = new THREE.Points(geometry, material);
+    @mesh.position.set(0,0,0);
+
+    geometry2 = new THREE.SphereGeometry(15,80,20,0,2*Math.PI,0,Math.PI/2);
+    geometry2.colors = colors;
+    vertices = @mesh.geometry.vertices;
+    @topmesh = new THREE.Points(geometry2,material);
+    @topmesh.sortParticles = true;
+
+    @scene.add(@mesh);
+    @scene.add(@topmesh);
+
+    geometry3 = new THREE.SphereGeometry(10,20,10);
+    whitematerial = new THREE.MeshBasicMaterial({color:0xffffff, opacity:1, wireframe: true, wireframeLinewidth: 2, transparent: true});
+    @wiremesh = new THREE.Mesh(geometry3, whitematerial);
+    @scene.add(@wiremesh);
+    @wiremesh.scale.x = 0.1;
+    @wiremesh.scale.y = 0.1;
+    @wiremesh.scale.z = 0.1;
+
+    material3 = new THREE.PointsMaterial({size:1, color: 0xffffff, transparent: true, opacity:1});
+    @starmesh = new THREE.Points(geometry,material3);
+    @scene.add(@starmesh);
+    @starmesh.scale.x = 10;
+    @starmesh.scale.y = 10;
+    @starmesh.scale.z = 10;
+
+    @topmesh.scale.x = 1.1;
+    @topmesh.scale.y = 1.1;
+    @topmesh.scale.z = 1.1;
+    @mesh.scale.x = 1.1;
+    @mesh.scale.y = 1.1;
+    @mesh.scale.z = 1.1;
+    @wiremesh.scale.x = .1;
+    @wiremesh.scale.y = .1;
+    @wiremesh.scale.z = .1;
+
+    @animateFn = =>
+      @mesh.rotation.y -= .005;
+      @topmesh.rotation.y += .005;
+      @topmesh.scale.x += (1 - @topmesh.scale.x)/50;
+      @topmesh.scale.y += (1 - @topmesh.scale.y)/50;
+      @topmesh.scale.z += (1 - @topmesh.scale.z)/50;
+      @mesh.scale.x += (1 - @mesh.scale.x)/50;
+      @mesh.scale.y += (1 - @mesh.scale.y)/50;
+      @mesh.scale.z += (1 - @mesh.scale.z)/50;
+      @wiremesh.scale.x += (1 - @wiremesh.scale.x)/50;
+      @wiremesh.scale.y += (1 - @wiremesh.scale.y)/50;
+      @wiremesh.scale.z += (1 - @wiremesh.scale.z)/50;
+
+      @starmesh.rotation.x += .001;
+      @starmesh.rotation.y += .002;
+      @starmesh.rotation.z += .005;
+
+    anim1 = =>
+      @topmesh.scale.x = 1.1;
+      @topmesh.scale.y = 1.1;
+      @topmesh.scale.z = 1.1;
+      @mesh.scale.x = 1.1;
+      @mesh.scale.y = 1.1;
+      @mesh.scale.z = 1.1;
+      @wiremesh.scale.x = .1;
+      @wiremesh.scale.y = .1;
+      @wiremesh.scale.z = .1;
+
+    @inter = setInterval anim1, (@bpm)
+
+    callback = =>
+      @scene.remove(@starmesh)
+      @scene.remove(@topmesh)
+      @scene.remove(@mesh)
+      @scene.remove(@wiremesh)
+      @scene.remove(@skybox)
+
+    @render()
+    # @callbackTimeout = setTimeout callback, 400
+
+  radioactiveAnim: =>
+    @clearScene()
+    @camera.position.z = 50
+
+    #skybox
+    skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000)
+    skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide })
+    @skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial)
+    skyboxMaterial.color.setHex(0xffdf43)
+    isYellow = true
+
+    @scene.add(@skybox)
+
+    #ELEMENTS
+    geometry = new THREE.RingGeometry(10, 20, 30, 20, 0, 4)
+    material = new THREE.MeshBasicMaterial(
+      color: 0x00000
+      side: THREE.DoubleSide)
+
+    mesh = new THREE.Mesh(geometry, material)
+    mesh3 = new THREE.Mesh(geometry, material)
+
+    @scene.add(mesh)
+    @scene.add(mesh3)
+    mesh.position.z = -1000
+    mesh3.position.z = -200
+
+    @animateFn= =>
+      mesh.position.z += (50 - (mesh.position.z)) / 10
+      mesh.rotation.z += .6
+      mesh3.position.z += (50 - (mesh3.position.z)) / 10
+      mesh3.rotation.z += .6
+
+    anim1 = =>
+      mesh.position.z = -1000
+      mesh3.position.z = -200
+
+    anim2 = =>
+      if isYellow
+        skyboxMaterial.color.setHex(0x2e28c3)
+        material.color.setHex(0xc01ccf)
+        isYellow = false
+      else
+        skyboxMaterial.color.setHex(0xffdf43)
+        material.color.setHex(0x000000)
+        isYellow = true
+
+    @inter = setInterval anim1, (@bpm)
+    @inter2 = setInterval anim2, (@bpm*2)
+
+    @render()
+
+  linesphereAnim: =>
+    @clearScene()
+    parameters = [ [ 0.0125, 0xff7700, 1, 2 ], [ 0.025, 0xff9900, 1, 1 ], [ 0.0375, 0xffaa00, 0.75, 1 ], [ 0.05, 0xffaa00, 0.5, 1 ], [ 0.0625, 0x000833, 0.8, 1 ]]
+    geometry = @createGeometry()
+    # @camera = new THREE.PerspectiveCamera( 80, @SCREEN_WIDTH / @SCREEN_HEIGHT, 1, 3000 )
+    @camera.position.z = 50
+
+    @objects = []
+    for i in [0...parameters.length]
+      p = parameters[ i ]
+      material = new THREE.LineBasicMaterial( { color: p[ 1 ], opacity: p[ 2 ], linewidth: p[ 3 ] } )
+
+      line = new THREE.LineSegments( geometry, material )
+      line.scale.x = line.scale.y = line.scale.z = p[ 0 ]
+      line.originalScale = p[ 0 ]
+      line.rotation.y = Math.random() * Math.PI
+      line.updateMatrix()
+      # line.geometry = geometry
+      @scene.add(line)
+      @objects.push(line)
+
+    @animateFn = =>
+      time = Date.now() * 0.0007
+      i = 0
+      while i < @scene.children.length
+        object = @scene.children[i]
+        if object instanceof THREE.Line
+          object.rotation.y = time * (if i < 4 then i + 1 else -(i + 1))
+
+          if i < 5
+            object.scale.x = object.scale.y = object.scale.z = object.originalScale += ((((i / 5 + 1) * (1.5))/30) - object.originalScale)/20
+        i++
+
+    anim1 = =>
+      i = 0
+      while i < 5
+        object = @scene.children[i]
+        if object instanceof THREE.Line
+            object.scale.x = object.scale.y = object.scale.z = object.originalScale = parameters[i][0]
+        i++
+
+    @inter = setInterval anim1, (@bpm)
+    @render()
+
+
+  ### HELPER ###
+
+  createGeometry: =>
+
+    geometry = new THREE.Geometry()
+    r = 450
+    for i in [1..1500]
+      vertex1 = new THREE.Vector3()
+      vertex1.x = Math.random() * 2 - 1
+      vertex1.y = Math.random() * 2 - 1
+      vertex1.z = Math.random() * 2 - 1
+      vertex1.normalize()
+      vertex1.multiplyScalar(r )
+
+      vertex2 = vertex1.clone()
+      vertex2.multiplyScalar( Math.random() * 0.09 + 1 )
+
+      geometry.vertices.push( vertex1 )
+      geometry.vertices.push( vertex2 )
+
+    return geometry
+
 
   ###
   RENDER AND CLEAR METHODS
