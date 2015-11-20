@@ -105,8 +105,11 @@ class Animations
   blankAnim: =>
 
   randomAnim: =>
-    anim = _.sample(Animations.getAll()).key
-    @[anim+"Anim"]()
+    clearInterval(@randomInt) if @randomInt?
+    @randomInt = setInterval((() =>
+      anim = _.sample(Animations.getAll()).key
+      @[anim+"Anim"]()
+    ), 10000)
 
   uberTriangleAnim: =>
     callback = @createGifAnim("uberTriangle.gif")
