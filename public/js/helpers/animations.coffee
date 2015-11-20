@@ -106,6 +106,8 @@ class Animations
 
   randomAnim: =>
     clearInterval(@randomInt) if @randomInt?
+    anim = _.sample(Animations.getAll()).key
+    @[anim+"Anim"]()
     @randomInt = setInterval((() =>
       anim = _.sample(Animations.getAll()).key
       @[anim+"Anim"]()
